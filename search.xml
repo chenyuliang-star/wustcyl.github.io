@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>CommonJS规范</title>
+    <url>/2020/04/21/CommonJS%E8%A7%84%E8%8C%83/</url>
+    <content><![CDATA[<h2 id="CommonJS规范"><a href="#CommonJS规范" class="headerlink" title="CommonJS规范"></a>CommonJS规范</h2><p><strong><code>CommonJS</code>是一种规范，通过简单的API声明服务器的模块，目标是让<code>JavaScript</code>可以运行在浏览器之外的所有地方，例如在服务器或者本地桌面应用服务程序上。</strong><br>这个项目最开始是由 Mozilla 的工程师 Kevin Dangoor 在2009年1月创建的，当时的名字是 <code>ServerJS</code>。</p>
+<blockquote>
+<p>我在这里描述的并不是一个技术问题，而是一件重大的事情，让大家走到一起来做决定，迈出第一步，来建立一个更大更酷的东西。 —— Kevin Dangoor’s What Server Side JavaScript needs</p>
+</blockquote>
+<p><code>CommonJS</code> 规范是为了解决 <code>JavaScript</code> 的作用域问题而定义的模块形式，可以使每个模块它自身的命名空间中执行。该规范的主要内容是，模块必须通过 <code>module.exports</code> 或 <code>exports</code> 导出对外的变量或接口，通过 require() 来导入其他模块的输出到当前模块作用域中。</p>
+<h3 id="CommonJS与NodeJS的关系"><a href="#CommonJS与NodeJS的关系" class="headerlink" title="CommonJS与NodeJS的关系"></a>CommonJS与NodeJS的关系</h3><p><code>Node.js</code>借鉴<code>CommonJS</code>模块规范实现了一套非常易用的模块系统，<code>npm</code>对模块规范的完美支持，也使得<code>Node.js</code>应用开发事半功倍，但是经常有人会说<code>NodeJS</code>是基于<code>CommonJS</code>规范的，那其实这里有两个误区：</p>
+<ul>
+<li>并不是先有的规范再有的<code>NodeJS</code>：虽然<code>CommonJS</code>在<code>NodeJS</code>之后产生，但是它对<code>NodeJS</code>后续发展影响甚大，所以说<code>NodeJS</code>基于<code>CommonJS</code>只是强调了<code>CommonJS</code>的重要性，而不是时间上的具体区分。</li>
+<li><code>NodeJS</code>并不支持所有<code>CommonJS</code>规范：<code>CommonJS</code>是一个很大的项目，里面制定了一系列的规范，Node并没有在所有方面都依赖<code>CommonJS</code>，只是在模块方面遵循了<code>CommonJS</code>当中的模块规范。</li>
+</ul>
+<h3 id="CommonJS的规范与NodeJS实现上面的区别"><a href="#CommonJS的规范与NodeJS实现上面的区别" class="headerlink" title="CommonJS的规范与NodeJS实现上面的区别"></a>CommonJS的规范与NodeJS实现上面的区别</h3><p>具体区别：</p>
+<ul>
+<li>原生<code>Node.js</code>当中，<code>module.exports</code>是真正的特殊对象，也是真正的对外暴露接口，在<code>CommonJS</code>没有出现以前，也没有<code>exports</code>这种东西。</li>
+<li>在<code>CommonJS</code>规范当中,规定<code>exports</code>对象是暴露接口的对象，所以<code>NodeJS</code>为了遵循规定但是又不修改自身<code>module.exports</code>的基础上，额外增加了将<code>exports</code>关键字绑定到了<code>module.exports</code>对象上的默认操作，说白了就<code>exports</code>默认指向了<code>module.exports</code>导出的对象。这就是为什么<code>NodeJS</code>在包装模块的时候将<code>exports</code>作为参数的原因，默认将规范添加了进来。</li>
+<li>两者同时存在时，以<code>module.exports</code>为准，因<code>为module.exports</code>的实际含义是一个完全预先构造的对象，但是<code>exports</code>可以手动被我们篡改指向，这就是很多讲师在给<code>NodeJS</code>初学者解释两者区别最常用的一句话：<code>exports</code>在没有改变指向的时候是<code>module.exports</code>的代替品 。</li>
+</ul>
+<h2 id="CommonJS的核心"><a href="#CommonJS的核心" class="headerlink" title="CommonJS的核心"></a>CommonJS的核心</h2><p><code>Node.js</code>对模块定义的非常简单，主要分为<code>模块引用</code>、<code>模块定义</code>、<code>模块标识</code>，其中最常用的模块处理命令就有两个：<code>require</code> 和 <code>exports</code>。</p>
+<h3 id="模块的引入和导出"><a href="#模块的引入和导出" class="headerlink" title="模块的引入和导出"></a>模块的引入和导出</h3><p>模块可以理解为将能够完成实现一个独立功能的代码封装到一个代码单元当中，在 <code>NodeJS</code> 中创建一个模块可以理解为把全部和此功能关联的函数放在一个文件当中。</p>
+<p>我们之前就说<code>exports</code>默认情况下是<code>module.exports</code>的引用，所以使用方面只有更方便的说法，没有对错和性能方面的区分。</p>
+<ul>
+<li><p>当我们编写对外暴露对个API的工具我们可以使用<code>exports</code>更方便</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// exports的写法</span></span><br><span class="line"> exports.add = <span class="keyword">async</span>() =&gt; &#123; &#125;;</span><br><span class="line"> exports.sub = <span class="keyword">async</span>() =&gt; &#123; &#125;;</span><br><span class="line"> <span class="comment">// 外部引用和使用</span></span><br><span class="line"> <span class="keyword">const</span> add = <span class="built_in">require</span>(<span class="string">'./xxx.js'</span>);</span><br><span class="line"> <span class="keyword">let</span> result = add();</span><br><span class="line"></span><br><span class="line"> <span class="comment">// module.exports的写法</span></span><br><span class="line"> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params"></span>) </span>&#123; &#125;;</span><br><span class="line"> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">sub</span>(<span class="params"></span>) </span>&#123; &#125;;</span><br><span class="line"> <span class="built_in">module</span>.exports = &#123; add, sub &#125;;</span><br><span class="line"> <span class="comment">// 外部引用和使用</span></span><br><span class="line"> <span class="keyword">const</span> obj = <span class="built_in">require</span>(<span class="string">'./xxx.js'</span>);</span><br><span class="line"> <span class="keyword">let</span> result = obj.add();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当我们编写同一个对象的时候使用<code>module.exports</code>更方便</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name) &#123;</span><br><span class="line">      <span class="keyword">this</span>.name = name</span><br><span class="line">    &#125;</span><br><span class="line">    study: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) =&gt; </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">'I have finished my homework'</span> </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="keyword">new</span> Student(<span class="string">'小明'</span>);</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h3 id="模块间的循环引用"><a href="#模块间的循环引用" class="headerlink" title="模块间的循环引用"></a>模块间的循环引用</h3><p>不管在<code>NodeJS</code>当中还是别的地方，模块之间都会相互引用，官网称之为<code>module cycles</code>，翻译成为模块间的循环引用。<br>而在<code>CommonJS Moudules1.0</code>当中有说明，在这种情况下，<code>require</code>返回的对象必须至少包含此外部模块在调用<code>require</code>函数之前就已经准备完毕的输出，这种解决模块间的循环引用的策略称为<code>模块缓存策略</code>。<br>A模块引用了B模块，B模块也引用了A模块，这种循环引用遵循的规则是这样：<code>一旦出现某个模块被循环加载，就只输出已经执行的部分，还未执行的部分不会输出。</code></p>
+<h3 id="模块的缓存"><a href="#模块的缓存" class="headerlink" title="模块的缓存"></a>模块的缓存</h3><p><code>CommonJS</code>用同步的方式加载模块。在服务端，模块文件都存在本地磁盘，读取非常快，所以这样做不会有问题。但是在浏览器端，限于网络原因，更合理的方案是使用异步加载。<br><code>CommonJS</code>会对加载好的模块进行缓存，也就是说同一模块只会加载一次。<code>NodeJS</code>的源码过于复杂，我们可以通过webpack进行代码打包来验证这也一点。<br><img src="/2020/04/21/CommonJS%E8%A7%84%E8%8C%83/1.png" alt="CommonJS的缓存机制"><br>我们不难发现，通过<code>__webpack_require__</code>引入其他模块的时候会检查之前是否引入过，如果引入过，那么就使用缓存。</p>
+<h2 id="ES6-模块与-CommonJS-模块的差异"><a href="#ES6-模块与-CommonJS-模块的差异" class="headerlink" title="ES6 模块与 CommonJS 模块的差异"></a>ES6 模块与 CommonJS 模块的差异</h2><h3 id="CommonJS模块是运行时加载，ES6模块是编译时输出接口"><a href="#CommonJS模块是运行时加载，ES6模块是编译时输出接口" class="headerlink" title="CommonJS模块是运行时加载，ES6模块是编译时输出接口"></a>CommonJS模块是运行时加载，ES6模块是编译时输出接口</h3><ul>
+<li><p>运行时加载: <code>CommonJS</code> 模块就是对象；即在输入时是先加载整个模块，生成一个对象，然后再从这个对象上面读取方法，这种加载称为“运行时加载”。</p>
+</li>
+<li><p>编译时加载: <code>ES6 模块</code> 不是对象，而是通过 <code>export</code> 命令显式指定输出的代码，<code>import</code>时采用静态命令的形式。即在<code>import</code>时可以指定加载某个输出值，而不是加载整个模块，这种加载称为“编译时加载”。</p>
+<p>PS: ES6 在语言标准的层面上，实现了模块功能，而且实现得相当简单，旨在成为浏览器和服务器通用的模块解决方案。ES6的模块不是对象，import命令会被 JavaScript 引擎静态分析，在编译时就引入模块代码，而不是在代码运行时加载，所以无法实现条件加载。也正因为这个，使得静态分析成为可能。</p>
+</li>
+</ul>
+<h3 id="CommonJS-模块输出的是一个值的拷贝，ES6-模块输出的是值的引用"><a href="#CommonJS-模块输出的是一个值的拷贝，ES6-模块输出的是值的引用" class="headerlink" title="CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用"></a>CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用</h3><ul>
+<li><code>CommonJS</code>模块输出的是值的拷贝，也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。</li>
+<li><code>ES6模块</code>的运行机制与<code>CommonJS</code>不一样。JS引擎对脚本静态分析的时候，遇到模块加载命令<code>import</code>，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。换句话说，<code>ES6</code>的<code>import</code>有点像<code>Unix</code>系统的“符号连接”，原始值变了，<code>import</code>加载的值也会跟着变。因此，<code>ES6</code> 模块是动态引用，并且不会缓存值，模块里面的变量绑定其所在的模块。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*************** a.js**********************/</span></span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>          <span class="comment">// count是个普通值</span></span><br><span class="line">exports.count = count; <span class="comment">// 输出值（值得类型时普通值）的拷贝</span></span><br><span class="line">exports.add = <span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    count++;           <span class="comment">//这里改变count值，并不会将module.exports对象的count属性值改变</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************** b.js**********************/</span></span><br><span class="line"><span class="keyword">const</span> &#123; count, add &#125; = <span class="built_in">require</span>(<span class="string">'./a.js'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(count)     <span class="comment">// 0</span></span><br><span class="line">add();</span><br><span class="line"><span class="built_in">console</span>.log(count)     <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*************** c.js**********************/</span></span><br><span class="line"><span class="keyword">const</span> obj = <span class="built_in">require</span>(<span class="string">'./a.js'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(obj.count)     <span class="comment">// 0</span></span><br><span class="line">obj.add();</span><br><span class="line"><span class="built_in">console</span>.log(obj.count)     <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>有些小伙伴会疑惑为啥不同的引用写法会造成不同，c.js很好理解，因为obj这个变量存的和a.js导出对象一样的堆中地址，所以操作是相互影响的，但是b.js这种解构写法类似于下面这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = <span class="built_in">require</span>(<span class="string">'./a.js'</span>)</span><br><span class="line"><span class="keyword">const</span> count = obj.count</span><br><span class="line"><span class="keyword">const</span> add = obj.add</span><br><span class="line"><span class="built_in">console</span>.log(obj.count)     <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">console</span>.log(count)         <span class="comment">// 0</span></span><br><span class="line">add();</span><br><span class="line"><span class="built_in">console</span>.log(obj.count)     <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(count)         <span class="comment">// 0</span></span><br></pre></td></tr></table></figure>
+
+<p>显然这里count虽然和obj.count的值一样，但是add操作的是obj里面的count,外面的count是不会受影响的。那我们再来看一个例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*************** a.js**********************/</span></span><br><span class="line"><span class="keyword">let</span> count = &#123; <span class="attr">num</span>: <span class="number">0</span> &#125; <span class="comment">// count是个引用值类型</span></span><br><span class="line">exports.count = count  <span class="comment">// 输出值（值得类型是引用值）的拷贝</span></span><br><span class="line">exports.add = <span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    count.num++;       <span class="comment">// 这里改变count中属性值，会将module.exports对象的count属性改变</span></span><br><span class="line">    count = &#123;&#125;         <span class="comment">// 这里改变了引用也不会改变已经导出出的那个count的引用值</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************** b.js**********************/</span></span><br><span class="line"><span class="keyword">const</span> &#123; count, add &#125; = <span class="built_in">require</span>(<span class="string">'./a.js'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(count)     <span class="comment">//&#123; num: 0 &#125;</span></span><br><span class="line">add();</span><br><span class="line"><span class="built_in">console</span>.log(count)     <span class="comment">//&#123; num: 1 &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>上述第二种情况可能会让你感到疑惑，你不是说值得拷贝么，一旦输出一个值，模块内部的变化就影响不到这个值么？怎么代码表现出来是会影响呢？我们来看一张图就明白了<br><img src="/2020/04/21/CommonJS%E8%A7%84%E8%8C%83/2.png" alt="CommonJS的缓存机制"></p>
+<p>虽然count是一个引用，但是0x005这地址本身就是个普通值，所以拷贝到b.js当中依旧是0x005这个普通值，只不过两个0x005指向堆中相同的内存，就好比两把钥匙能开同一扇们一样,所以值得拷贝这句话没有错。<br>外部模块a.js中的count = {}表示外部模块当中的变化，由0x005变成了0x006，但是也没有影响到在b.js当中缓存值count的指向，这个缓存值依旧是0x005,所以 一旦输出一个值，模块内部的变化就影响不到这个值 这句话也没有问题。</p>
+<p>ES6模块不是对象，它的对外接口只是一种静态定义，在代码静态解析阶段就会生成。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*************** a.js**********************/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">let</span> count = <span class="number">0</span>;<span class="comment">//输出的是值的引用，指向同一块内存</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> add = <span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    count++;<span class="comment">//此时引用指向的内存值发生改变</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/*************** b.js**********************/</span></span><br><span class="line"><span class="keyword">import</span> &#123; count, add &#125; <span class="keyword">from</span> <span class="string">'./a.js'</span></span><br><span class="line"><span class="built_in">console</span>.log(count) <span class="comment">//0</span></span><br><span class="line">add();</span><br><span class="line"><span class="built_in">console</span>.log(count)<span class="comment">//1</span></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>NodeJS</tag>
+        <tag>CommonJS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>开启你的NodeJS之旅</title>
+    <url>/2020/04/21/%E5%BC%80%E5%90%AF%E4%BD%A0%E7%9A%84NodeJS%E4%B9%8B%E6%97%85/</url>
+    <content><![CDATA[<h1 id="一句话概述NodeJS"><a href="#一句话概述NodeJS" class="headerlink" title="一句话概述NodeJS"></a>一句话概述NodeJS</h1><p><code>Node.js</code>是一个能够在服务器端运行<code>JavaScript</code>的开放源代码、跨平台<code>JavaScript</code>运行环境。</p>
+<h1 id="NodeJS的特点"><a href="#NodeJS的特点" class="headerlink" title="NodeJS的特点"></a>NodeJS的特点</h1><p><code>Node.js</code>采用Google开发的V8运行代码，使用<code>事件驱动</code>、<code>非阻塞IO</code>模型等技术来提高性能，可优化应用程序的传输量和规模,这些技术通常用于数据密集的即时应用程序。</p>
+<h1 id="为什么要学NodeJS"><a href="#为什么要学NodeJS" class="headerlink" title="为什么要学NodeJS"></a>为什么要学NodeJS</h1><p>现在对于前端工程师来说，<code>NodeJS</code>已经成为了必备的一项技能。</p>
+<ul>
+<li>可以通过<code>NodeJS</code>来构建<code>BFF</code>层和后端进行<code>rpc</code>调用，为前端提供<code>http</code>服务，常见的比如就是<code>SSR</code>(服务端渲染）。</li>
+<li>可以构建前端需要的工作流如<code>Gulp</code>, <code>Webpack</code>。</li>
+<li>可以构建开发者工具如<code>VS Code</code>。</li>
+<li>可以构建客户端应用如<code>Electron</code>, 使用<code>NodeJS</code>构建的项目可以最大限度的复用目前的Web工程。</li>
+</ul>
+<h1 id="NodeJS的安装"><a href="#NodeJS的安装" class="headerlink" title="NodeJS的安装"></a>NodeJS的安装</h1><p><a href="https://nodejs.org/en/" target="_blank" rel="noopener">NodeJS官网</a></p>
+<h1 id="NodeJS的面试题目"><a href="#NodeJS的面试题目" class="headerlink" title="NodeJS的面试题目"></a>NodeJS的面试题目</h1><p>希望你在学习完Node后也不妨来试试下面这些面试题，思考面试题的目的不是为了记忆，而是从各个角度来检测自己关于知识体系的漏洞。因为很多时候，所谓面试题的答案并不是最佳的理解，因为最佳的理解只来自于自己深刻理解知识点并熟练运用后的体会。</p>
+<ul>
+<li><a href="https://juejin.im/post/5d2fc598e51d4577596487a3" target="_blank" rel="noopener">NodeJS有难度的面试题，你能答对几个？</a></li>
+<li><a href="https://github.com/ElemeFE/node-interview/tree/master/sections/zh-cn" target="_blank" rel="noopener">如何通过饿了么 Node.js 面试</a></li>
+<li><a href="https://github.com/ElemeFE/node-interview/tree/master/sections/zh-cn" target="_blank" rel="noopener">Node.js面试题之2017</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>NodeJS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NodeJS是什么</title>
+    <url>/2020/04/21/NodeJS%E6%98%AF%E4%BB%80%E4%B9%88/</url>
+    <content><![CDATA[<h1 id="到底什么是NodeJS"><a href="#到底什么是NodeJS" class="headerlink" title="到底什么是NodeJS"></a>到底什么是NodeJS</h1><p>如果有人问你到底什么是node,可以用一句话来回答，因为这句话基本上包含了node的本质和其作用：<br><strong>Node不是一门语言，也不是一个框架，是基于Chrome V8引擎的JavaScript运行时环境；同时结合libuv扩展了JavaScript的功能，使得JavaScript能够支持浏览器Dom的操作，同时具有了后端语言才有的I/O，文件读写和操作数据库的能力，是目前最简单的全栈环境。</strong></p>
+<p>作为前端程序员我们首先要知道为什么Node选择了JavaScript，因为：<strong>语言的语法结构简单，进行数据提取和分析就越容易，用来开发互联网应用也就越简单，如果对象创建和线程管理都不是必须的，那么基于原型而不是面向对象的JavaScript就是最完美的</strong>。</p>
+<p>万维网之父Tim-Berners-Lee曾经说过：</p>
+<blockquote>
+<p>任何可以使用JavaScript实现的应用，最终都用JavaScript实现</p>
+</blockquote>
+<h1 id="NodeJS概述"><a href="#NodeJS概述" class="headerlink" title="NodeJS概述"></a>NodeJS概述</h1><p>在官网有段关于node的描述如下：</p>
+<blockquote>
+<p>Node.js is a JavaScript runtime built on Chrome’s V8 engine. Node.js uses an event-driven , non-block I/O model that makes it lightweight and efficient, Node.js’ package ecosystem,npm, is the largest ecosystem of open source libraries in the world</p>
+</blockquote>
+<ul>
+<li>首先最重要的就是<code>NodeJS</code>的本质是<code>JavaScript</code>环境运行时，因为在过去<code>JavaScript</code>只能在浏览器当中运行，而因为浏览器当中有JS引擎，它可以帮助浏览器去识别和执行<code>JavaScript</code>语言，但是浏览器是每个不同厂家的产品，其实使用的引擎也不一样，而作为最近十年表现优异的V8引擎也帮助Chrome浏览器在市场独占鳌头，所以有人把它拿出来做了修改，让V8引擎可以单独运行在别的地方，也致使<code>JavaScript</code>脱离的浏览器也可以运行，所谓环境运行时，就是<code>JavaScript</code>可以运行的平台。</li>
+<li><code>JavaScript</code>和<code>C++</code>有着千丝万缕的联系。因为V8引擎是通过C++来编写的，但是实际上这种底层语言的学习成本和使用成本都很大，我们编写的<code>JavaScript</code>实际上要转化成为这种<code>C++</code>去运行的，同时在<code>NodeJS</code>当中<code>I/O</code>都是异步的，全部要交给由<code>C++</code>编写的<code>libuv</code>这个事件循环库来处理，简化了并发模型。</li>
+<li><code>NodeJS</code>的目标是让并发变的简单，而使用的这种<code>事件循环和非阻塞I/O模型</code>让在以网络编程为主的<code>I/O密集</code>的应用当中脱引而出。</li>
+</ul>
+<h2 id="非阻塞I-O"><a href="#非阻塞I-O" class="headerlink" title="非阻塞I/O"></a>非阻塞I/O</h2><p>首先<code>I/O</code>是<code>input</code>和<code>output</code>的缩写，表示计算机输入输出的意思，除了常见的键盘，显示器，打印机都是输入输出设备，对计算机来说读写磁盘和网络操作都是<code>I/O操作</code>，当然数据库的操作也算，因为数据库也在磁盘当中。</p>
+<p>我们先来看看<code>阻塞I/O</code>：<code>I/O</code>的时候进程休眠等待<code>I/O</code>完成后进入下一步。如果不考虑跳转语句，普通的程序是逐条执行的，当程序走到I/O操作的时候，程序会调用操作系统更底层的命令来完成操作，期间程序就会等待底层命令返回结果。拿到结果才能进行下一条程序语句的执行，我们把程序等待底层命令结果返回的这种行为或者现象称之为阻塞。</p>
+<p><code>非阻塞I/O</code>：<code>I/O</code>时函数立即返回，进程不等待<code>I/O</code>完成。程序进行到<code>I/O操作</code>的时候，主程序开始调用底层命令，但是主程序并不会一直等待底层命令的返回，而是执行下一条程序语句。然后等到底层<code>I/O</code>有结果返回的时候，主程序再去决定丢弃还是处理。</p>
+<p>但是计算机指令都可以理解为阻塞的，为什么偏偏<code>I/O操作</code>就是特殊的呢？简单来说: 大部分的指令都依赖于<code>CPU</code>运算，因为到当下来说<code>CPU</code>运行速度极其的快，一秒能执行30亿条语句，非<code>I/O操作</code>压根感觉不到阻塞，但是<code>I/O操作</code>更慢，比如拷贝电影文件，这都是肉眼看得见的慢。</p>
+<h2 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h2><p>前面我们说<code>I/O操作</code>完成后主程序会感知到，但是一定会有一种机制，就是主程序啥时候知道<code>I/O操作</code>完成，或者说完成的结果以怎么样的方式告诉主程序？</p>
+<p><code>非阻塞的I/O</code>认为立即完成的，同时发射一个事件并写好这个事件的处理函数，底层I/O操作完成后触发这个事件并执行相关的处理函数，内部的实现实际上是一个<code>观察者模式</code><br><img src="/2020/04/21/NodeJS%E6%98%AF%E4%BB%80%E4%B9%88/1.jpg" alt="NodeJS事件驱动"></p>
+<p>首先<code>libuv</code>由<code>事件循环</code>和<code>线程池</code>组成，负责所有<code>I/O任务</code>的分发和执行 Node.js是由事件循环来分发I/O任务，由工作线程将任务分发到线程池当中，事件循环只需要等待执行结果即可。这就是node的事件驱动模式。</p>
+<ul>
+<li>因为<code>JS</code>是单线程,单线程的特点就是同同一时间只能干一件事，所有任务都需要排队挨个执行。</li>
+<li>当<code>CPU</code>空闲时，它完全可以不管<code>I/O设备</code>而直接挂起处于等待中的任务，先运行排在后面的任务。</li>
+</ul>
+<h2 id="NodeJS的特点"><a href="#NodeJS的特点" class="headerlink" title="NodeJS的特点"></a>NodeJS的特点</h2><p><code>NodeJS</code>的四个最大特点：<code>适合构建WEB应用</code>、<code>高性能</code>、 <code>简单</code>、 <code>可扩展</code></p>
+<h3 id="适合构建WEB应用"><a href="#适合构建WEB应用" class="headerlink" title="适合构建WEB应用"></a>适合构建WEB应用</h3><p><code>WEB应用</code>基本都是<code>I/O密集</code>的场所，根据上面<code>NodeJS</code>的简单介绍，可以看出<code>NodeJS</code>是非常适合这种场景的。</p>
+<h4 id="I-O密集-CPU密集"><a href="#I-O密集-CPU密集" class="headerlink" title="I/O密集 || CPU密集"></a>I/O密集 || CPU密集</h4><ul>
+<li>CPU密集：程序大部分用来做计算和逻辑处理，比如牙所，解压，加密，解密等等。</li>
+<li>I/O密集：程序大部分用来做存取设备，网络设施的一些读取操作，以及数据库的读取，比如文件操作，网络操作，数据库。</li>
+</ul>
+<h4 id="Web场景"><a href="#Web场景" class="headerlink" title="Web场景"></a>Web场景</h4><p>让我们想一下<code>Web</code>的常见场景</p>
+<ul>
+<li>静态资源读取：基本上网络当中静态资源的获取都是要从服务器上获取，服务器这些资源是放在服务器的硬盘上的，所以对于服务器就是静态资源读取，属于文件操作，属于I/O密集。</li>
+<li>页面渲染：渲染页面也是取模板，也是属于I/O操作。</li>
+</ul>
+<h3 id="高性能"><a href="#高性能" class="headerlink" title="高性能"></a>高性能</h3><ul>
+<li>代码执行效率高：<code>NodeJS</code>构建在优秀的V8引擎上，执行速度在动态语言中算最快的。</li>
+<li>天生异步：<code>事件驱动</code>和<code>非阻塞I/O</code>特性决定了必须要采用异步的方式，实际上每个<code>I/O</code>都是异步的，因此集成到<code>libuv</code>中才会让开发者感觉不到并发的存在。</li>
+</ul>
+<h3 id="简单可扩展"><a href="#简单可扩展" class="headerlink" title="简单可扩展"></a>简单可扩展</h3><p><code>NodeJS</code>的开发语言是<code>JavaScript</code>。作为前端工程师，<code>JavaScript</code>应该是我们最熟悉的语言，<code>JavaScript</code>的高度动态性使得<code>NodeJS</code>变得非常易于扩展。</p>
+<h2 id="NodeJS的工作模式"><a href="#NodeJS的工作模式" class="headerlink" title="NodeJS的工作模式"></a>NodeJS的工作模式</h2><p>有关<code>事件循环</code>和<code>非阻塞I/O</code>我们这里依然有必有再说一下，这次我们将用最通俗的语言来讲，并且解释为什么这种模型能面对高并发。<br><img src="/2020/04/21/NodeJS%E6%98%AF%E4%BB%80%E4%B9%88/2.png" alt="NodeJS的工作模式"></p>
+<h3 id="传统Apache工作流程"><a href="#传统Apache工作流程" class="headerlink" title="传统Apache工作流程"></a>传统Apache工作流程</h3><p>在此之前我们先说说传统的<code>java apache</code>是怎么工作的。<br>面对用户访问，它是每次一个用户访问进来就要开启一个进程，在这个进程中进行<code>CPU</code>对请求分析，然后再进行<code>I/O操作</code>。好比一个饭店是这样的工作模式，一个服务员配对一个大厨，这个服务员就是<code>CPU</code>,大厨就是<code>I/O</code>,他们属于一个进程里的东西，服务员点菜，然后交给同一个进程中的大厨去进行<code>I/O操作</code>。但是这个模式有两个特别明显的缺点：</p>
+<ul>
+<li>一个服务器最大进程数有限 ，比如最大可以开5000个进程，那就说明同时只能处理5000个用户访问，第5001个用户就得等着（这就好比饭店中有30个服务员和30个大厨，第30个客人来就要等，等到哪个大厨做完才能开始点菜。</li>
+<li><code>CPU</code>被严重浪费 ，同时开5000个进程，一个进程完全处理一个请求需要10分钟，但是<code>CPU</code>处理的速度远远大于<code>I/O</code>,导致进程处于在<code>I/O</code>操作的时候，进程中分配的<code>CPU</code>是空闲的（好比服务员点菜需要一分钟，而大厨做菜需要30分钟，导致服务员在大厨做饭的时候没事干，玩手机）。</li>
+</ul>
+<h3 id="NodeJS的工作流程"><a href="#NodeJS的工作流程" class="headerlink" title="NodeJS的工作流程"></a>NodeJS的工作流程</h3><p>相比之下，我们上图中<code>NodeJS</code>的工作模型就完美的解决了问题，面对用户的访问，只开一个单线程，这个单线程当中处理所有用户的请求分析，但是所有<code>I/O的操作</code>都交个多线程去做，这种模型就好比一个饭店只招一个服务员，但是有很多大厨，服务员可以不停的点菜，大厨可以不停的做菜，而且做好了就告诉服务员，服务员按号码给顾客上菜即可，当然顺序也是不一定，谁的菜先好了就给谁。这样的模型就不会怕客人多，服务员也不会空闲。虽然大厨做菜的这个时间是没有办法缩短的，但是服务员的利用率提高了，也就是<code>CPU</code>利用率提高了，同时无论多少客人来都不会等待点菜，只会等待做菜。</p>
+<p>PS：但是我们特别要注意的就是在上图这个模型中，事件循环（Event Lopp）是单线程的，也就是只开一个进程，这个进程里只有一个线程。而<code>非阻塞I/O</code>(Non-blocking)是多线程的，这里是操作系统在调度自己的多进程多进程，和<code>NodeJS</code>开启的单线程没啥关系。所以<code>Nodejs</code>当中的单线程只针对主进程，<code>I/O操作</code>系统底层是多线程调度。</p>
+<p><strong>NodeJS的多线程</strong><br>在<code>NodeJS</code>当中有个<code>Cluster</code>的模块，专门解决多核并发问题，使用这个模块<code>CPU</code>有几个核我们就起几个进程。</p>
+]]></content>
+      <categories>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>NodeJS</tag>
+      </tags>
+  </entry>
+</search>

@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CommonJS规范 - CYL&#39;s Blog</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="CYL, Blog, Hexo, Web, HTML, CSS, JS, NodeJS, React, Vue, 前端, 前端技术, 二次元,"> 
+    <meta name="description" content="CYL的个人博客，专注于前端技术，喜欢各种有趣的技术，穿梭于二次元的前端工程师,CommonJS规范CommonJS是一种规范，通过简单的API声明服务器的模块，目标是让JavaScript可以运行在浏览器之外的所有地方，例如在服务器或者本地桌面应用服务程序上。这个项目最开始是,"> 
+    <meta name="author" content="CYL"> 
+    <link rel="alternative" href="atom.xml" title="CYL&#39;s Blog" type="application/atom+xml"> 
+    <link rel="icon" href="https://github.com/fluidicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">CYL&#39;s Blog</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://wustcyl.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">CommonJS规范</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">CommonJS规范</h1>
+        <div class="stuff">
+            <span>四月 21, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/CommonJS/" rel="tag">CommonJS</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/NodeJS/" rel="tag">NodeJS</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h2 id="CommonJS规范"><a href="#CommonJS规范" class="headerlink" title="CommonJS规范"></a>CommonJS规范</h2><p><strong><code>CommonJS</code>是一种规范，通过简单的API声明服务器的模块，目标是让<code>JavaScript</code>可以运行在浏览器之外的所有地方，例如在服务器或者本地桌面应用服务程序上。</strong><br>这个项目最开始是由 Mozilla 的工程师 Kevin Dangoor 在2009年1月创建的，当时的名字是 <code>ServerJS</code>。</p>
+<blockquote>
+<p>我在这里描述的并不是一个技术问题，而是一件重大的事情，让大家走到一起来做决定，迈出第一步，来建立一个更大更酷的东西。 —— Kevin Dangoor’s What Server Side JavaScript needs</p>
+</blockquote>
+<p><code>CommonJS</code> 规范是为了解决 <code>JavaScript</code> 的作用域问题而定义的模块形式，可以使每个模块它自身的命名空间中执行。该规范的主要内容是，模块必须通过 <code>module.exports</code> 或 <code>exports</code> 导出对外的变量或接口，通过 require() 来导入其他模块的输出到当前模块作用域中。</p>
+<h3 id="CommonJS与NodeJS的关系"><a href="#CommonJS与NodeJS的关系" class="headerlink" title="CommonJS与NodeJS的关系"></a>CommonJS与NodeJS的关系</h3><p><code>Node.js</code>借鉴<code>CommonJS</code>模块规范实现了一套非常易用的模块系统，<code>npm</code>对模块规范的完美支持，也使得<code>Node.js</code>应用开发事半功倍，但是经常有人会说<code>NodeJS</code>是基于<code>CommonJS</code>规范的，那其实这里有两个误区：</p>
+<ul>
+<li>并不是先有的规范再有的<code>NodeJS</code>：虽然<code>CommonJS</code>在<code>NodeJS</code>之后产生，但是它对<code>NodeJS</code>后续发展影响甚大，所以说<code>NodeJS</code>基于<code>CommonJS</code>只是强调了<code>CommonJS</code>的重要性，而不是时间上的具体区分。</li>
+<li><code>NodeJS</code>并不支持所有<code>CommonJS</code>规范：<code>CommonJS</code>是一个很大的项目，里面制定了一系列的规范，Node并没有在所有方面都依赖<code>CommonJS</code>，只是在模块方面遵循了<code>CommonJS</code>当中的模块规范。</li>
+</ul>
+<h3 id="CommonJS的规范与NodeJS实现上面的区别"><a href="#CommonJS的规范与NodeJS实现上面的区别" class="headerlink" title="CommonJS的规范与NodeJS实现上面的区别"></a>CommonJS的规范与NodeJS实现上面的区别</h3><p>具体区别：</p>
+<ul>
+<li>原生<code>Node.js</code>当中，<code>module.exports</code>是真正的特殊对象，也是真正的对外暴露接口，在<code>CommonJS</code>没有出现以前，也没有<code>exports</code>这种东西。</li>
+<li>在<code>CommonJS</code>规范当中,规定<code>exports</code>对象是暴露接口的对象，所以<code>NodeJS</code>为了遵循规定但是又不修改自身<code>module.exports</code>的基础上，额外增加了将<code>exports</code>关键字绑定到了<code>module.exports</code>对象上的默认操作，说白了就<code>exports</code>默认指向了<code>module.exports</code>导出的对象。这就是为什么<code>NodeJS</code>在包装模块的时候将<code>exports</code>作为参数的原因，默认将规范添加了进来。</li>
+<li>两者同时存在时，以<code>module.exports</code>为准，因<code>为module.exports</code>的实际含义是一个完全预先构造的对象，但是<code>exports</code>可以手动被我们篡改指向，这就是很多讲师在给<code>NodeJS</code>初学者解释两者区别最常用的一句话：<code>exports</code>在没有改变指向的时候是<code>module.exports</code>的代替品 。</li>
+</ul>
+<h2 id="CommonJS的核心"><a href="#CommonJS的核心" class="headerlink" title="CommonJS的核心"></a>CommonJS的核心</h2><p><code>Node.js</code>对模块定义的非常简单，主要分为<code>模块引用</code>、<code>模块定义</code>、<code>模块标识</code>，其中最常用的模块处理命令就有两个：<code>require</code> 和 <code>exports</code>。</p>
+<h3 id="模块的引入和导出"><a href="#模块的引入和导出" class="headerlink" title="模块的引入和导出"></a>模块的引入和导出</h3><p>模块可以理解为将能够完成实现一个独立功能的代码封装到一个代码单元当中，在 <code>NodeJS</code> 中创建一个模块可以理解为把全部和此功能关联的函数放在一个文件当中。</p>
+<p>我们之前就说<code>exports</code>默认情况下是<code>module.exports</code>的引用，所以使用方面只有更方便的说法，没有对错和性能方面的区分。</p>
+<ul>
+<li><p>当我们编写对外暴露对个API的工具我们可以使用<code>exports</code>更方便</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// exports的写法</span></span><br><span class="line"> exports.add = <span class="keyword">async</span>() =&gt; &#123; &#125;;</span><br><span class="line"> exports.sub = <span class="keyword">async</span>() =&gt; &#123; &#125;;</span><br><span class="line"> <span class="comment">// 外部引用和使用</span></span><br><span class="line"> <span class="keyword">const</span> add = <span class="built_in">require</span>(<span class="string">'./xxx.js'</span>);</span><br><span class="line"> <span class="keyword">let</span> result = add();</span><br><span class="line"></span><br><span class="line"> <span class="comment">// module.exports的写法</span></span><br><span class="line"> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params"></span>) </span>&#123; &#125;;</span><br><span class="line"> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">sub</span>(<span class="params"></span>) </span>&#123; &#125;;</span><br><span class="line"> <span class="built_in">module</span>.exports = &#123; add, sub &#125;;</span><br><span class="line"> <span class="comment">// 外部引用和使用</span></span><br><span class="line"> <span class="keyword">const</span> obj = <span class="built_in">require</span>(<span class="string">'./xxx.js'</span>);</span><br><span class="line"> <span class="keyword">let</span> result = obj.add();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当我们编写同一个对象的时候使用<code>module.exports</code>更方便</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name) &#123;</span><br><span class="line">      <span class="keyword">this</span>.name = name</span><br><span class="line">    &#125;</span><br><span class="line">    study: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) =&gt; </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">'I have finished my homework'</span> </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="keyword">new</span> Student(<span class="string">'小明'</span>);</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h3 id="模块间的循环引用"><a href="#模块间的循环引用" class="headerlink" title="模块间的循环引用"></a>模块间的循环引用</h3><p>不管在<code>NodeJS</code>当中还是别的地方，模块之间都会相互引用，官网称之为<code>module cycles</code>，翻译成为模块间的循环引用。<br>而在<code>CommonJS Moudules1.0</code>当中有说明，在这种情况下，<code>require</code>返回的对象必须至少包含此外部模块在调用<code>require</code>函数之前就已经准备完毕的输出，这种解决模块间的循环引用的策略称为<code>模块缓存策略</code>。<br>A模块引用了B模块，B模块也引用了A模块，这种循环引用遵循的规则是这样：<code>一旦出现某个模块被循环加载，就只输出已经执行的部分，还未执行的部分不会输出。</code></p>
+<h3 id="模块的缓存"><a href="#模块的缓存" class="headerlink" title="模块的缓存"></a>模块的缓存</h3><p><code>CommonJS</code>用同步的方式加载模块。在服务端，模块文件都存在本地磁盘，读取非常快，所以这样做不会有问题。但是在浏览器端，限于网络原因，更合理的方案是使用异步加载。<br><code>CommonJS</code>会对加载好的模块进行缓存，也就是说同一模块只会加载一次。<code>NodeJS</code>的源码过于复杂，我们可以通过webpack进行代码打包来验证这也一点。<br><img src="/2020/04/21/CommonJS%E8%A7%84%E8%8C%83/1.png" alt="CommonJS的缓存机制"><br>我们不难发现，通过<code>__webpack_require__</code>引入其他模块的时候会检查之前是否引入过，如果引入过，那么就使用缓存。</p>
+<h2 id="ES6-模块与-CommonJS-模块的差异"><a href="#ES6-模块与-CommonJS-模块的差异" class="headerlink" title="ES6 模块与 CommonJS 模块的差异"></a>ES6 模块与 CommonJS 模块的差异</h2><h3 id="CommonJS模块是运行时加载，ES6模块是编译时输出接口"><a href="#CommonJS模块是运行时加载，ES6模块是编译时输出接口" class="headerlink" title="CommonJS模块是运行时加载，ES6模块是编译时输出接口"></a>CommonJS模块是运行时加载，ES6模块是编译时输出接口</h3><ul>
+<li><p>运行时加载: <code>CommonJS</code> 模块就是对象；即在输入时是先加载整个模块，生成一个对象，然后再从这个对象上面读取方法，这种加载称为“运行时加载”。</p>
+</li>
+<li><p>编译时加载: <code>ES6 模块</code> 不是对象，而是通过 <code>export</code> 命令显式指定输出的代码，<code>import</code>时采用静态命令的形式。即在<code>import</code>时可以指定加载某个输出值，而不是加载整个模块，这种加载称为“编译时加载”。</p>
+<p>PS: ES6 在语言标准的层面上，实现了模块功能，而且实现得相当简单，旨在成为浏览器和服务器通用的模块解决方案。ES6的模块不是对象，import命令会被 JavaScript 引擎静态分析，在编译时就引入模块代码，而不是在代码运行时加载，所以无法实现条件加载。也正因为这个，使得静态分析成为可能。</p>
+</li>
+</ul>
+<h3 id="CommonJS-模块输出的是一个值的拷贝，ES6-模块输出的是值的引用"><a href="#CommonJS-模块输出的是一个值的拷贝，ES6-模块输出的是值的引用" class="headerlink" title="CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用"></a>CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用</h3><ul>
+<li><code>CommonJS</code>模块输出的是值的拷贝，也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。</li>
+<li><code>ES6模块</code>的运行机制与<code>CommonJS</code>不一样。JS引擎对脚本静态分析的时候，遇到模块加载命令<code>import</code>，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。换句话说，<code>ES6</code>的<code>import</code>有点像<code>Unix</code>系统的“符号连接”，原始值变了，<code>import</code>加载的值也会跟着变。因此，<code>ES6</code> 模块是动态引用，并且不会缓存值，模块里面的变量绑定其所在的模块。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*************** a.js**********************/</span></span><br><span class="line"><span class="keyword">let</span> count = <span class="number">0</span>          <span class="comment">// count是个普通值</span></span><br><span class="line">exports.count = count; <span class="comment">// 输出值（值得类型时普通值）的拷贝</span></span><br><span class="line">exports.add = <span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    count++;           <span class="comment">//这里改变count值，并不会将module.exports对象的count属性值改变</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************** b.js**********************/</span></span><br><span class="line"><span class="keyword">const</span> &#123; count, add &#125; = <span class="built_in">require</span>(<span class="string">'./a.js'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(count)     <span class="comment">// 0</span></span><br><span class="line">add();</span><br><span class="line"><span class="built_in">console</span>.log(count)     <span class="comment">// 0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*************** c.js**********************/</span></span><br><span class="line"><span class="keyword">const</span> obj = <span class="built_in">require</span>(<span class="string">'./a.js'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(obj.count)     <span class="comment">// 0</span></span><br><span class="line">obj.add();</span><br><span class="line"><span class="built_in">console</span>.log(obj.count)     <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>有些小伙伴会疑惑为啥不同的引用写法会造成不同，c.js很好理解，因为obj这个变量存的和a.js导出对象一样的堆中地址，所以操作是相互影响的，但是b.js这种解构写法类似于下面这样：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = <span class="built_in">require</span>(<span class="string">'./a.js'</span>)</span><br><span class="line"><span class="keyword">const</span> count = obj.count</span><br><span class="line"><span class="keyword">const</span> add = obj.add</span><br><span class="line"><span class="built_in">console</span>.log(obj.count)     <span class="comment">// 0</span></span><br><span class="line"><span class="built_in">console</span>.log(count)         <span class="comment">// 0</span></span><br><span class="line">add();</span><br><span class="line"><span class="built_in">console</span>.log(obj.count)     <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">console</span>.log(count)         <span class="comment">// 0</span></span><br></pre></td></tr></table></figure>
+
+<p>显然这里count虽然和obj.count的值一样，但是add操作的是obj里面的count,外面的count是不会受影响的。那我们再来看一个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*************** a.js**********************/</span></span><br><span class="line"><span class="keyword">let</span> count = &#123; <span class="attr">num</span>: <span class="number">0</span> &#125; <span class="comment">// count是个引用值类型</span></span><br><span class="line">exports.count = count  <span class="comment">// 输出值（值得类型是引用值）的拷贝</span></span><br><span class="line">exports.add = <span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    count.num++;       <span class="comment">// 这里改变count中属性值，会将module.exports对象的count属性改变</span></span><br><span class="line">    count = &#123;&#125;         <span class="comment">// 这里改变了引用也不会改变已经导出出的那个count的引用值</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*************** b.js**********************/</span></span><br><span class="line"><span class="keyword">const</span> &#123; count, add &#125; = <span class="built_in">require</span>(<span class="string">'./a.js'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(count)     <span class="comment">//&#123; num: 0 &#125;</span></span><br><span class="line">add();</span><br><span class="line"><span class="built_in">console</span>.log(count)     <span class="comment">//&#123; num: 1 &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>上述第二种情况可能会让你感到疑惑，你不是说值得拷贝么，一旦输出一个值，模块内部的变化就影响不到这个值么？怎么代码表现出来是会影响呢？我们来看一张图就明白了<br><img src="/2020/04/21/CommonJS%E8%A7%84%E8%8C%83/2.png" alt="CommonJS的缓存机制"></p>
+<p>虽然count是一个引用，但是0x005这地址本身就是个普通值，所以拷贝到b.js当中依旧是0x005这个普通值，只不过两个0x005指向堆中相同的内存，就好比两把钥匙能开同一扇们一样,所以值得拷贝这句话没有错。<br>外部模块a.js中的count = {}表示外部模块当中的变化，由0x005变成了0x006，但是也没有影响到在b.js当中缓存值count的指向，这个缓存值依旧是0x005,所以 一旦输出一个值，模块内部的变化就影响不到这个值 这句话也没有问题。</p>
+<p>ES6模块不是对象，它的对外接口只是一种静态定义，在代码静态解析阶段就会生成。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*************** a.js**********************/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">let</span> count = <span class="number">0</span>;<span class="comment">//输出的是值的引用，指向同一块内存</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> add = <span class="function"><span class="params">()</span>=&gt;</span>&#123;</span><br><span class="line">    count++;<span class="comment">//此时引用指向的内存值发生改变</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/*************** b.js**********************/</span></span><br><span class="line"><span class="keyword">import</span> &#123; count, add &#125; <span class="keyword">from</span> <span class="string">'./a.js'</span></span><br><span class="line"><span class="built_in">console</span>.log(count) <span class="comment">//0</span></span><br><span class="line">add();</span><br><span class="line"><span class="built_in">console</span>.log(count)<span class="comment">//1</span></span><br></pre></td></tr></table></figure>
+
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CommonJS规范"><span class="toc-number">1.</span> <span class="toc-text">CommonJS规范</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CommonJS与NodeJS的关系"><span class="toc-number">1.1.</span> <span class="toc-text">CommonJS与NodeJS的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CommonJS的规范与NodeJS实现上面的区别"><span class="toc-number">1.2.</span> <span class="toc-text">CommonJS的规范与NodeJS实现上面的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CommonJS的核心"><span class="toc-number">2.</span> <span class="toc-text">CommonJS的核心</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#模块的引入和导出"><span class="toc-number">2.1.</span> <span class="toc-text">模块的引入和导出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模块间的循环引用"><span class="toc-number">2.2.</span> <span class="toc-text">模块间的循环引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模块的缓存"><span class="toc-number">2.3.</span> <span class="toc-text">模块的缓存</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ES6-模块与-CommonJS-模块的差异"><span class="toc-number">3.</span> <span class="toc-text">ES6 模块与 CommonJS 模块的差异</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CommonJS模块是运行时加载，ES6模块是编译时输出接口"><span class="toc-number">3.1.</span> <span class="toc-text">CommonJS模块是运行时加载，ES6模块是编译时输出接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CommonJS-模块输出的是一个值的拷贝，ES6-模块输出的是值的引用"><span class="toc-number">3.2.</span> <span class="toc-text">CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
