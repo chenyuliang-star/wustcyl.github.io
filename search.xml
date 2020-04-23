@@ -68,33 +68,6 @@
       </tags>
   </entry>
   <entry>
-    <title>开启你的NodeJS之旅</title>
-    <url>/2020/04/21/%E5%BC%80%E5%90%AF%E4%BD%A0%E7%9A%84NodeJS%E4%B9%8B%E6%97%85/</url>
-    <content><![CDATA[<h1 id="一句话概述NodeJS"><a href="#一句话概述NodeJS" class="headerlink" title="一句话概述NodeJS"></a>一句话概述NodeJS</h1><p><code>Node.js</code>是一个能够在服务器端运行<code>JavaScript</code>的开放源代码、跨平台<code>JavaScript</code>运行环境。</p>
-<h1 id="NodeJS的特点"><a href="#NodeJS的特点" class="headerlink" title="NodeJS的特点"></a>NodeJS的特点</h1><p><code>Node.js</code>采用Google开发的V8运行代码，使用<code>事件驱动</code>、<code>非阻塞IO</code>模型等技术来提高性能，可优化应用程序的传输量和规模,这些技术通常用于数据密集的即时应用程序。</p>
-<h1 id="为什么要学NodeJS"><a href="#为什么要学NodeJS" class="headerlink" title="为什么要学NodeJS"></a>为什么要学NodeJS</h1><p>现在对于前端工程师来说，<code>NodeJS</code>已经成为了必备的一项技能。</p>
-<ul>
-<li>可以通过<code>NodeJS</code>来构建<code>BFF</code>层和后端进行<code>rpc</code>调用，为前端提供<code>http</code>服务，常见的比如就是<code>SSR</code>(服务端渲染）。</li>
-<li>可以构建前端需要的工作流如<code>Gulp</code>, <code>Webpack</code>。</li>
-<li>可以构建开发者工具如<code>VS Code</code>。</li>
-<li>可以构建客户端应用如<code>Electron</code>, 使用<code>NodeJS</code>构建的项目可以最大限度的复用目前的Web工程。</li>
-</ul>
-<h1 id="NodeJS的安装"><a href="#NodeJS的安装" class="headerlink" title="NodeJS的安装"></a>NodeJS的安装</h1><p><a href="https://nodejs.org/en/" target="_blank" rel="noopener">NodeJS官网</a></p>
-<h1 id="NodeJS的面试题目"><a href="#NodeJS的面试题目" class="headerlink" title="NodeJS的面试题目"></a>NodeJS的面试题目</h1><p>希望你在学习完Node后也不妨来试试下面这些面试题，思考面试题的目的不是为了记忆，而是从各个角度来检测自己关于知识体系的漏洞。因为很多时候，所谓面试题的答案并不是最佳的理解，因为最佳的理解只来自于自己深刻理解知识点并熟练运用后的体会。</p>
-<ul>
-<li><a href="https://juejin.im/post/5d2fc598e51d4577596487a3" target="_blank" rel="noopener">NodeJS有难度的面试题，你能答对几个？</a></li>
-<li><a href="https://github.com/ElemeFE/node-interview/tree/master/sections/zh-cn" target="_blank" rel="noopener">如何通过饿了么 Node.js 面试</a></li>
-<li><a href="https://github.com/ElemeFE/node-interview/tree/master/sections/zh-cn" target="_blank" rel="noopener">Node.js面试题之2017</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>NodeJS</category>
-      </categories>
-      <tags>
-        <tag>NodeJS</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>NodeJS是什么</title>
     <url>/2020/04/21/NodeJS%E6%98%AF%E4%BB%80%E4%B9%88/</url>
     <content><![CDATA[<h1 id="到底什么是NodeJS"><a href="#到底什么是NodeJS" class="headerlink" title="到底什么是NodeJS"></a>到底什么是NodeJS</h1><p>如果有人问你到底什么是node,可以用一句话来回答，因为这句话基本上包含了node的本质和其作用：<br><strong>Node不是一门语言，也不是一个框架，是基于Chrome V8引擎的JavaScript运行时环境；同时结合libuv扩展了JavaScript的功能，使得JavaScript能够支持浏览器Dom的操作，同时具有了后端语言才有的I/O，文件读写和操作数据库的能力，是目前最简单的全栈环境。</strong></p>
@@ -148,6 +121,91 @@
 <h3 id="NodeJS的工作流程"><a href="#NodeJS的工作流程" class="headerlink" title="NodeJS的工作流程"></a>NodeJS的工作流程</h3><p>相比之下，我们上图中<code>NodeJS</code>的工作模型就完美的解决了问题，面对用户的访问，只开一个单线程，这个单线程当中处理所有用户的请求分析，但是所有<code>I/O的操作</code>都交个多线程去做，这种模型就好比一个饭店只招一个服务员，但是有很多大厨，服务员可以不停的点菜，大厨可以不停的做菜，而且做好了就告诉服务员，服务员按号码给顾客上菜即可，当然顺序也是不一定，谁的菜先好了就给谁。这样的模型就不会怕客人多，服务员也不会空闲。虽然大厨做菜的这个时间是没有办法缩短的，但是服务员的利用率提高了，也就是<code>CPU</code>利用率提高了，同时无论多少客人来都不会等待点菜，只会等待做菜。</p>
 <p>PS：但是我们特别要注意的就是在上图这个模型中，事件循环（Event Lopp）是单线程的，也就是只开一个进程，这个进程里只有一个线程。而<code>非阻塞I/O</code>(Non-blocking)是多线程的，这里是操作系统在调度自己的多进程多进程，和<code>NodeJS</code>开启的单线程没啥关系。所以<code>Nodejs</code>当中的单线程只针对主进程，<code>I/O操作</code>系统底层是多线程调度。</p>
 <p><strong>NodeJS的多线程</strong><br>在<code>NodeJS</code>当中有个<code>Cluster</code>的模块，专门解决多核并发问题，使用这个模块<code>CPU</code>有几个核我们就起几个进程。</p>
+]]></content>
+      <categories>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>NodeJS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NodeJS的模块机制</title>
+    <url>/2020/04/22/NodeJS%E7%9A%84%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6/</url>
+    <content><![CDATA[<h2 id="如何理解NodeJS的模块"><a href="#如何理解NodeJS的模块" class="headerlink" title="如何理解NodeJS的模块"></a>如何理解NodeJS的模块</h2><h3 id="NodeJS模块的本质"><a href="#NodeJS模块的本质" class="headerlink" title="NodeJS模块的本质"></a>NodeJS模块的本质</h3><p>通过前面<code>CommonJS</code>的学习，我们对NodeJS有了一个初步的认识。<a href="https://wustcyl.github.io/2020/04/21/CommonJS%E8%A7%84%E8%8C%83/">CommonJS规范</a><br>我们先讨论模块在被引用之前到底<code>NodeJS</code>执行了什么操作。</p>
+<p>其实每个模块在被引用的时候都被头尾包装，将其包裹在一个函数当中，代码执行完毕后将<code>exports</code>对象作为该函数的返回值返回给引用方。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">exports,require,module,__firename,__dirname</span>) </span>&#123;</span><br><span class="line">  <span class="comment">//模块中你自己书写的代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这就是你平时可以直接使用<code>exports</code>、<code>require</code>、<code>module</code>、<code>__firename</code>、<code>__dirname</code>这个五个变量的原因.<br>我们都知道在<code>JS</code>中，最常见的就是通过函数来创建函数作用域。<br>对于每个模块（文件）来说，<code>NodeJS</code>想要做俩件事情。</p>
+<ul>
+<li>保证顶层的变量只在模块内部起作用(变量的作用域限制在本地而不会暴露到全局) </li>
+<li>帮助提供一些全局查找的变量(上面五个)</li>
+</ul>
+<p>我们简单看一下源码如何实现的</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//code wrapper</span></span><br><span class="line">NativeModule.wrapper = [</span><br><span class="line">  <span class="string">'(function (exports,require,module,__firename,__dirname) &#123;'</span>,</span><br><span class="line">  <span class="string">'\n &#125;)'</span></span><br><span class="line">]</span><br><span class="line"><span class="comment">//script为源代码</span></span><br><span class="line">NativeModule.warp = <span class="function"><span class="keyword">function</span> (<span class="params">script</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> NativeModule.wrapper[<span class="number">0</span>] + script + NativeModule.wrapper[<span class="number">1</span>]  <span class="comment">// 拼接字符串的操作</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//代码编译</span></span><br><span class="line">NativeModule.prototype.compile = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> source = NativeModule.getSource(<span class="keyword">this</span>.id)       <span class="comment">// 这里的id指的就是模块的名称，同时也是文件的地址</span></span><br><span class="line">  source = NativeModule.warp(source)</span><br><span class="line">  <span class="keyword">this</span>.loading = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> fn = runInThisContext(source, &#123;    <span class="comment">// 具体执行代码的方法是runInThisContext</span></span><br><span class="line">      fileName: <span class="keyword">this</span>.fileName,</span><br><span class="line">      lineOffset: <span class="number">0</span>,</span><br><span class="line">      disPlayErrors: <span class="literal">true</span></span><br><span class="line">    &#125;)</span><br><span class="line">    fn(<span class="keyword">this</span>.exports,NativeModule.require,<span class="keyword">this</span>,<span class="keyword">this</span>.fileName)</span><br><span class="line">    <span class="keyword">this</span>.loaded = <span class="literal">true</span></span><br><span class="line">  &#125; <span class="keyword">finally</span> (error) &#123;</span><br><span class="line">    <span class="keyword">this</span>.loading = <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="NodeJS模块的加载"><a href="#NodeJS模块的加载" class="headerlink" title="NodeJS模块的加载"></a>NodeJS模块的加载</h3><h4 id="module中到底有什么"><a href="#module中到底有什么" class="headerlink" title="module中到底有什么"></a>module中到底有什么</h4><p>我们创建一个<code>a.js</code>文件然后里面的内容如下:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">module</span>);</span><br></pre></td></tr></table></figure>
+<p>执行结果如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Module &#123;</span><br><span class="line">  id: <span class="string">'.'</span>,</span><br><span class="line">  exports: &#123;&#125;,</span><br><span class="line">  parent: <span class="literal">null</span>,</span><br><span class="line">  filename: <span class="string">'C:\\Users\\Administrator\\Desktop\\fsDemo\\a.js'</span>,</span><br><span class="line">  loaded: <span class="literal">false</span>,</span><br><span class="line">  children: [],</span><br><span class="line">  paths:</span><br><span class="line">   [ <span class="string">'C:\\Users\\Administrator\\Desktop\\fsDemo\\node_modules'</span>,</span><br><span class="line">     <span class="string">'C:\\Users\\Administrator\\Desktop\\node_modules'</span>,</span><br><span class="line">     <span class="string">'C:\\Users\\Administrator\\node_modules'</span>,</span><br><span class="line">     <span class="string">'C:\\Users\\node_modules'</span>,</span><br><span class="line">     <span class="string">'C:\\node_modules'</span> ] </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们继续创建一个<code>b.js</code>文件，然后里面的内容如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">'./a.js'</span>)</span><br></pre></td></tr></table></figure>
+<p>执行结果如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Module &#123;</span><br><span class="line">  id: <span class="string">'C:\\Users\\Administrator\\Desktop\\fsDemo\\a.js'</span>,</span><br><span class="line">  exports: &#123;&#125;,</span><br><span class="line">  parent:</span><br><span class="line">   Module &#123;</span><br><span class="line">     id: <span class="string">'.'</span>,</span><br><span class="line">     exports: &#123;&#125;,</span><br><span class="line">     parent: <span class="literal">null</span>,</span><br><span class="line">     filename: <span class="string">'C:\\Users\\Administrator\\Desktop\\fsDemo\\b.js'</span>,</span><br><span class="line">     loaded: <span class="literal">false</span>,</span><br><span class="line">     children: [ [Circular] ],</span><br><span class="line">     paths:</span><br><span class="line">      [ <span class="string">'C:\\Users\\Administrator\\Desktop\\fsDemo\\node_modules'</span>,</span><br><span class="line">        <span class="string">'C:\\Users\\Administrator\\Desktop\\node_modules'</span>,</span><br><span class="line">        <span class="string">'C:\\Users\\Administrator\\node_modules'</span>,</span><br><span class="line">        <span class="string">'C:\\Users\\node_modules'</span>,</span><br><span class="line">        <span class="string">'C:\\node_modules'</span> ] &#125;,</span><br><span class="line">  filename: <span class="string">'C:\\Users\\Administrator\\Desktop\\fsDemo\\a.js'</span>,</span><br><span class="line">  loaded: <span class="literal">false</span>,</span><br><span class="line">  children: [],</span><br><span class="line">  paths:</span><br><span class="line">   [ <span class="string">'C:\\Users\\Administrator\\Desktop\\fsDemo\\node_modules'</span>,</span><br><span class="line">     <span class="string">'C:\\Users\\Administrator\\Desktop\\node_modules'</span>,</span><br><span class="line">     <span class="string">'C:\\Users\\Administrator\\node_modules'</span>,</span><br><span class="line">     <span class="string">'C:\\Users\\node_modules'</span>,</span><br><span class="line">     <span class="string">'C:\\node_modules'</span> ] &#125;</span><br></pre></td></tr></table></figure>
+<p>引用一个模块是按照paths属性当中的数组一层层的遍历寻找。</p>
+<p>现在，我们可以简单的通过一个构造函数来表示一个模块的定义</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Module</span>(<span class="params">id,parent</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.id = id</span><br><span class="line">    <span class="keyword">this</span>.exports = &#123;&#125;</span><br><span class="line">    <span class="keyword">this</span>.parent = parent</span><br><span class="line">    updateChileren(parent,<span class="keyword">this</span>,<span class="literal">false</span>)</span><br><span class="line">    <span class="keyword">this</span>.fileName = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">this</span>.loaded = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">this</span>.children = []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以模块在被包装的时候所传递的<code>module</code>参数就是模块本身，而模块本身不包含你在这个文件所写的代码的，模块执行的时候是根据模块id来读取的你编写的代码的，然后拼接好成为字符串，依靠V8底层的C++代码来识别和执行整个字符串的。</p>
+<h3 id="模块的查找"><a href="#模块的查找" class="headerlink" title="模块的查找"></a>模块的查找</h3><p><code>NodeJS</code>当中的模块有两种类型，<code>核心模块</code> 和 <code>文件模块</code>，通过<code>require</code>方法能引用的就是这两种模块，只不过参数的类型还是比较丰富：</p>
+<ul>
+<li><code>http,fs,path</code>等<code>NodeJS</code>内置的核心模块</li>
+<li><code>./mod</code>或者<code>../mod</code>等这种相对路径的文件模块</li>
+<li><code>/pathtomodule/mod</code>等这种绝对路径的文件模块</li>
+<li>核心模块的优先级最高，在有命名冲突的情况下优先加载核心模块，文件模块只能按照相对路径和绝对路径的方式去加载</li>
+<li>第三方模块加载</li>
+</ul>
+<p>这里我们说一下第三方模块的加载步骤：<br>首先在当前目录下的<code>node_module</code>目录下面查找是否包含这样一个模块，如果没有找到，就要在当前目录的上一层<code>node_module</code>目录中继续查找，反复执行直到根目录为止。<br>由于<code>Node.js</code>中存在4类模块（原生模块和3种文件模块），尽管<code>require</code>方法极其简单，但是内部的加载却是十分复杂的，其加载优先级也各自不同。如下图所示：<br><img src="/2020/04/22/NodeJS%E7%9A%84%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6/1.png" alt="NodeJS模块加载流程图"></p>
+<h4 id="初查阶段"><a href="#初查阶段" class="headerlink" title="初查阶段"></a>初查阶段</h4><ul>
+<li>如果是node核心模块，就直接返回模块名称</li>
+<li>如果是引入的第三方npm模块，会返回父级所在文件夹下的node_modules，父父级所在文件夹下的node_modules，依次递归，一直到/node_modules和用户名下的.node_modules以及全局环境变量配置的全局安装的模块文件夹组成的数组</li>
+<li>如果是相对路径引入的模块，会将相对路径和父级路径之间进行一个path.resolve()，然后返回</li>
+</ul>
+<h4 id="精确查找，获取文件绝对路径"><a href="#精确查找，获取文件绝对路径" class="headerlink" title="精确查找，获取文件绝对路径"></a>精确查找，获取文件绝对路径</h4><ul>
+<li>先尝试加载node_modules/express，这种没有扩展名的文件是否存在</li>
+<li>尝试按照扩展名规则查找，依次判断node_modules文件夹下.js .json .node结尾的文件名为express的文件是否存在，返回文件的绝对路径</li>
+<li>判断node_modules/express文件夹下的package.json是否存在，如果存在，返回main字段指定的文件的绝对路径</li>
+<li>判断node_modules/express/index.js是否存在，存在返回对应文件绝对路径</li>
+</ul>
+<p>我们初略看一下<code>NodeJS</code>的加载模块源代码</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Module._load = <span class="function"><span class="keyword">function</span>(<span class="params">request, parent, isMain</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(parent) &#123;</span><br><span class="line">    debug(<span class="string">'Module._load REQUEST %s parent: %s'</span>,request,parent.id)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//获取文件路径</span></span><br><span class="line">  <span class="keyword">var</span> filename = Module._resolveFilename(request, parent, isMain);</span><br><span class="line">  <span class="comment">// 尝试从缓存中读取模块</span></span><br><span class="line">  <span class="keyword">var</span> cachedModule = Module._cache[filename];</span><br><span class="line">  <span class="keyword">if</span> (cachedModule) &#123;</span><br><span class="line">    updateChildren(parent, cachedModule, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">return</span> cachedModule.exports;</span><br><span class="line">  &#125;</span><br><span class="line">    <span class="comment">// 如果是原生模块返回</span></span><br><span class="line">  <span class="keyword">if</span> (NativeModule.nonInternalExists(filename)) &#123;</span><br><span class="line">    debug(<span class="string">'load native module %s'</span>, request);</span><br><span class="line">    <span class="keyword">return</span> NativeModule.require(filename);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 第三方模块创建模块对象</span></span><br><span class="line">  <span class="keyword">var</span> <span class="built_in">module</span> = <span class="keyword">new</span> Module(filename, parent);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (isMain) &#123;</span><br><span class="line">    process.mainModule = <span class="built_in">module</span>;</span><br><span class="line">    <span class="built_in">module</span>.id = <span class="string">'.'</span>;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="comment">// 缓存模块</span></span><br><span class="line">  Module._cache[filename] = <span class="built_in">module</span>;</span><br><span class="line">    </span><br><span class="line"> <span class="comment">// 加载模块</span></span><br><span class="line">  tryModuleLoad(<span class="built_in">module</span>, filename);</span><br><span class="line"></span><br><span class="line"> <span class="comment">// 返回模块的exports</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">module</span>.exports;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>上面这个源码是Node加载模块直接会调用的函数，但是在里面很多其他的函数我们需要单独拿出来理解，但是单独拿出来讲会让你理解的思路不清晰，所以我们这里给出一幅图，让你清楚的看到每个函数到底在干什么：<strong>加载模块是从require函数开始的，require函数当中返回的是Module._load函数结果，所以我们从Module._load入手看看整个加载过程是怎么样的</strong><br><img src="/2020/04/22/NodeJS%E7%9A%84%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6/2.png" alt="Module._load"></p>
+<p><code>NodeJS</code>加载模块的情况大致就是这样了。</p>
+]]></content>
+      <categories>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>NodeJS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>开启你的NodeJS之旅</title>
+    <url>/2020/04/21/%E5%BC%80%E5%90%AF%E4%BD%A0%E7%9A%84NodeJS%E4%B9%8B%E6%97%85/</url>
+    <content><![CDATA[<h1 id="一句话概述NodeJS"><a href="#一句话概述NodeJS" class="headerlink" title="一句话概述NodeJS"></a>一句话概述NodeJS</h1><p><code>Node.js</code>是一个能够在服务器端运行<code>JavaScript</code>的开放源代码、跨平台<code>JavaScript</code>运行环境。</p>
+<h1 id="NodeJS的特点"><a href="#NodeJS的特点" class="headerlink" title="NodeJS的特点"></a>NodeJS的特点</h1><p><code>Node.js</code>采用Google开发的V8运行代码，使用<code>事件驱动</code>、<code>非阻塞IO</code>模型等技术来提高性能，可优化应用程序的传输量和规模,这些技术通常用于数据密集的即时应用程序。</p>
+<h1 id="为什么要学NodeJS"><a href="#为什么要学NodeJS" class="headerlink" title="为什么要学NodeJS"></a>为什么要学NodeJS</h1><p>现在对于前端工程师来说，<code>NodeJS</code>已经成为了必备的一项技能。</p>
+<ul>
+<li>可以通过<code>NodeJS</code>来构建<code>BFF</code>层和后端进行<code>rpc</code>调用，为前端提供<code>http</code>服务，常见的比如就是<code>SSR</code>(服务端渲染）。</li>
+<li>可以构建前端需要的工作流如<code>Gulp</code>, <code>Webpack</code>。</li>
+<li>可以构建开发者工具如<code>VS Code</code>。</li>
+<li>可以构建客户端应用如<code>Electron</code>, 使用<code>NodeJS</code>构建的项目可以最大限度的复用目前的Web工程。</li>
+</ul>
+<h1 id="NodeJS的安装"><a href="#NodeJS的安装" class="headerlink" title="NodeJS的安装"></a>NodeJS的安装</h1><p><a href="https://nodejs.org/en/" target="_blank" rel="noopener">NodeJS官网</a></p>
+<h1 id="NodeJS的面试题目"><a href="#NodeJS的面试题目" class="headerlink" title="NodeJS的面试题目"></a>NodeJS的面试题目</h1><p>希望你在学习完Node后也不妨来试试下面这些面试题，思考面试题的目的不是为了记忆，而是从各个角度来检测自己关于知识体系的漏洞。因为很多时候，所谓面试题的答案并不是最佳的理解，因为最佳的理解只来自于自己深刻理解知识点并熟练运用后的体会。</p>
+<ul>
+<li><a href="https://juejin.im/post/5d2fc598e51d4577596487a3" target="_blank" rel="noopener">NodeJS有难度的面试题，你能答对几个？</a></li>
+<li><a href="https://github.com/ElemeFE/node-interview/tree/master/sections/zh-cn" target="_blank" rel="noopener">如何通过饿了么 Node.js 面试</a></li>
+<li><a href="https://github.com/ElemeFE/node-interview/tree/master/sections/zh-cn" target="_blank" rel="noopener">Node.js面试题之2017</a></li>
+</ul>
 ]]></content>
       <categories>
         <category>NodeJS</category>
