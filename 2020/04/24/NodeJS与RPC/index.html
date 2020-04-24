@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NodeJS与RPC - CYL&#39;s Blog</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="CYL, Blog, Hexo, Web, HTML, CSS, JS, NodeJS, React, Vue, 前端, 前端技术, 二次元,"> 
+    <meta name="description" content="CYL的个人博客，专注于前端技术，喜欢各种有趣的技术，穿梭于二次元的前端工程师,什么是RPCRPC（Remote Procedure Call）中文名「远程过程调用」，又是一个很蹩脚的翻译。我们拆开理解下，「过程」也叫方法或函数，「远程」就是说方法不在当前进程里，而是在其他进程,"> 
+    <meta name="author" content="CYL"> 
+    <link rel="alternative" href="atom.xml" title="CYL&#39;s Blog" type="application/atom+xml"> 
+    <link rel="icon" href="https://github.com/fluidicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+     <script type="text/javascript">
+       var interval;
+        window.onload = function () {
+            interval = setInterval(function () {
+                if (document.getElementById('btn_donate')) {
+                    document.getElementById('btn_donate').onclick = function(){
+                    document.getElementById('donate_board').classList.add('hidden');
+                    document.getElementById('donate_guide').classList.remove('hidden');
+                  }
+                  clearInterval(interval);
+                }
+            }, 1000);
+        }
+    </script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">CYL&#39;s Blog</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://wustcyl.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">NodeJS与RPC</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">NodeJS与RPC</h1>
+        <div class="stuff">
+            <span>四月 24, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/NodeJS%C2%B7%E5%BA%94%E7%94%A8%E7%AF%87/" rel="tag">NodeJS·应用篇</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/RPC/" rel="tag">RPC</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="什么是RPC"><a href="#什么是RPC" class="headerlink" title="什么是RPC"></a>什么是RPC</h3><p><code>RPC（Remote Procedure Call）</code>中文名「远程过程调用」，又是一个很蹩脚的翻译。我们拆开理解下，「过程」也叫方法或函数，「远程」就是说方法不在当前进程里，而是在其他进程或机器上面，合起来 RPC 就是调用其他进程或机器上面的函数。</p>
+<h3 id="为什么要进行RPC"><a href="#为什么要进行RPC" class="headerlink" title="为什么要进行RPC"></a>为什么要进行RPC</h3><p>在没有网络的时代，程序都是单机版的，所有逻辑都必须在同一个进程里。进程之间就像高楼大厦里面陌生的邻居，大家无法共享，遇到同样的功能只能重复实现一次。显然进程的障碍是逆天的，不符合先进生产力的发展方向，这个时候「进程间通信」的需求出现了，大家要求进程之间能够相互交流，相互共享和调用。这样再写程序，就可以利用进程间通信机制来调用和共享已经存在的功能了。随着网络的出现，进程的隔阂进一步消除，不光同一栋楼里的邻居可以共享资源，其他小区、甚至其他城市的居民都可以通过互联网互相调用，这就是 <code>RPC</code>。</p>
+<h3 id="如何理解RPC-RPC的原理"><a href="#如何理解RPC-RPC的原理" class="headerlink" title="如何理解RPC(RPC的原理)"></a>如何理解RPC(RPC的原理)</h3><p><code>RPC</code>就是要像调用本地的函数一样去调远程函数, 在研究<code>RPC</code>前，我们先看看本地调用是怎么调的。</p>
+<h4 id="本地过程调用"><a href="#本地过程调用" class="headerlink" title="本地过程调用"></a>本地过程调用</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span> (<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> result = add(<span class="number">1</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>对于以上代码，我们都非常熟悉，这里有俩个非常关键的点</p>
+<ul>
+<li>如何调用add函数（换句话说如何找到add函数）</li>
+<li>如何将参数传递过去，并且取到返回值</li>
+</ul>
+<h4 id="RPC调用"><a href="#RPC调用" class="headerlink" title="RPC调用"></a>RPC调用</h4><p>在远程调用时，我们需要执行的函数体是在远程的机器上的，也就是说，<code>add</code>是在另一个进程中执行的。<br>没错，上面俩个关键的点就<code>RPC</code>需要解决的问题。</p>
+<ul>
+<li><strong>Call ID映射</strong><br>我们怎么告诉远程机器我们要调用<code>add</code>，而不是其他函数呢？在本地调用中，函数体是直接通过函数指针来指定的，我们调用<code>add</code>，编译器就自动帮我们调用它相应的函数指针。但是在远程调用中，函数指针是不行的，因为两个进程的地址空间是完全不一样的。所以，在<code>RPC</code>中，所有的函数都必须有自己的一个<code>ID</code>。这个<code>ID</code>在所有进程中都是唯一确定的。客户端在做远程过程调用时，必须附上这个<code>ID</code>。然后我们还需要在客户端和服务端分别维护一个 {函数 &lt;–&gt; <code>Call ID</code>} 的对应表。两者的表不一定需要完全相同，但相同的函数对应的<code>Call ID</code>必须相同。当客户端需要进行远程调用时，它就查一下这个表，找出相应的<code>Call ID</code>，然后把它传给服务端，服务端也通过查表，来确定客户端需要调用的函数，然后执行相应函数的代码。</li>
+<li><strong>序列化和反序列化</strong><br>客户端怎么把参数值传给远程的函数呢？在本地调用中，我们只需要把参数压到栈里，然后让函数自己去栈里读就行。但是在远程过程调用时，客户端跟服务端是不同的进程，不能通过内存来传递参数。甚至有时候客户端和服务端使用的都不是同一种语言（比如服务端用<code>C++</code>，客户端用<code>Java或者Python</code>）。这时候就需要客户端把参数先转成一个字节流，传给服务端后，再把字节流转成自己能读取的格式。这个过程叫序列化和反序列化。同理，从服务端返回的值也需要序列化反序列化的过程。</li>
+<li><strong>网络传输</strong><br>远程调用往往用在网络上，客户端和服务端是通过网络连接的。所有的数据都需要通过网络传输，因此就需要有一个网络传输层。网络传输层需要把<code>Call ID</code>和序列化后的参数字节流传给服务端，然后再把序列化后的调用结果传回客户端。只要能完成这两者的，都可以作为传输层使用。因此，它所使用的协议其实是不限的，能完成传输就行。尽管大部分<code>RPC</code>框架都使用<code>TCP</code>协议，但其实<code>UDP</code>也可以，而<code>gRPC</code>干脆就用了<code>HTTP2</code>。</li>
+</ul>
+<p>好了，我们简述一下一个RPC的调用过程。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Client端 </span></span><br><span class="line"><span class="comment">//    int l_times_r = Call(ServerAddr, Multiply, lvalue, rvalue)</span></span><br><span class="line"><span class="number">1.</span> 将这个调用映射为Call ID。这里假设用最简单的字符串当Call ID的方法</span><br><span class="line"><span class="number">2.</span> 将Call ID，参数序列化。可以直接将它们的值以二进制形式打包</span><br><span class="line"><span class="number">3.</span> 把<span class="number">2</span>中得到的数据包发送给Server，这需要使用网络传输层</span><br><span class="line"><span class="number">4.</span> 等待服务器返回结果</span><br><span class="line"><span class="number">5.</span> 如果服务器调用成功，那么就将结果反序列化</span><br><span class="line"></span><br><span class="line"><span class="comment">// Server端</span></span><br><span class="line"><span class="number">1.</span> 在本地维护一个Call ID到函数引用的映射call_id_map，可以用map来实现</span><br><span class="line"><span class="number">2.</span> 等待请求</span><br><span class="line"><span class="number">3.</span> 得到一个请求后，将其数据包反序列化，得到Call ID</span><br><span class="line"><span class="number">4.</span> 通过在call_id_map中查找，得到相应的函数引用</span><br><span class="line"><span class="number">5.</span> 将参数反序列化后，在本地调用函数，得到结果</span><br><span class="line"><span class="number">6.</span> 将结果序列化后通过网络返回给Client</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/04/24/NodeJS%E4%B8%8ERPC/1.png" alt="RPC"></p>
+<h3 id="NodeJS与RPC"><a href="#NodeJS与RPC" class="headerlink" title="NodeJS与RPC"></a>NodeJS与RPC</h3><h4 id="数据的序列化与反序列化"><a href="#数据的序列化与反序列化" class="headerlink" title="数据的序列化与反序列化"></a>数据的序列化与反序列化</h4><p>前端工程师对<code>http</code>协议肯定都非常熟悉，我们一直都在和它打交道。因为<code>http</code>协议是文本协议，所以我们在<code>http</code>协议中使用的数据格式一般都是文本如: <code>text/html</code>, <code>JSON</code>等。<br>在<code>RPC</code>中，我们得使用二进制数据来进行传输，原因有俩点</p>
+<ul>
+<li>更小的数据体积</li>
+<li>更快的编解码速率</li>
+</ul>
+<p>下面我介绍一种二进制数据的序列化与反序列化工具 <code>protocol-buffers</code> <a href="https://www.npmjs.com/package/protocol-buffers" target="_blank" rel="noopener">protocol-buffers</a>。</p>
+<p>我们建一个<code>test.proto</code>文件，然后在里面定义数据格式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">message Test &#123;</span><br><span class="line">  required float num  &#x3D; 1;</span><br><span class="line">  required string payload &#x3D; &#39;2&#39;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>NodeJS</code>代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> protobuf = <span class="built_in">require</span>(<span class="string">'protocol-buffers'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> messages = protobuf(fs.readFileSync(path.join(__dirname, <span class="string">'./test.proto'</span>), <span class="string">'utf-8'</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> buf = messages.Test.encode(&#123;</span><br><span class="line">    num: <span class="number">42</span>,</span><br><span class="line">    payload: <span class="string">'hello world'</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'数据序列化'</span>, buf);</span><br><span class="line"><span class="comment">//数据序列化 &lt;Buffer 0d 00 00 28 42 12 0b 68 65 6c 6c 6f 20 77 6f 72 6c 64&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'数据反序列化'</span>, messages.Test.decode(buf))</span><br><span class="line"><span class="comment">//数据反序列化 &#123; num: 42, payload: 'hello world' &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>通过上面的简单代码我们对数据进行序列化与反序列化，更多详情可以看 <a href="https://www.npmjs.com/package/protocol-buffers" target="_blank" rel="noopener">protocol-buffers</a> 文档。</p>
+<h4 id="NodeJS-net模块建立TCP通道"><a href="#NodeJS-net模块建立TCP通道" class="headerlink" title="NodeJS net模块建立TCP通道"></a>NodeJS net模块建立TCP通道</h4><p><code>server.js</code>代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> net = <span class="built_in">require</span>(<span class="string">'net'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = net.createServer(<span class="function"><span class="keyword">function</span> (<span class="params">socket</span>) </span>&#123;</span><br><span class="line">    socket.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">buffer</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(buffer.toString());</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen(<span class="number">3001</span>);</span><br><span class="line"><span class="comment">//在本地3001端口启动服务</span></span><br></pre></td></tr></table></figure>
+<p><code>client.js</code>代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> net = <span class="built_in">require</span>(<span class="string">'net'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> net.Socket(&#123;&#125;);</span><br><span class="line"></span><br><span class="line">client.connect(&#123;</span><br><span class="line">    port: <span class="number">3001</span>,</span><br><span class="line">    host: <span class="string">'127.0.0.1'</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">client.write(<span class="string">'TCP 建立'</span>);</span><br></pre></td></tr></table></figure>
+<p>一旦我们连接<code>server.js</code>启动的服务，服务端就输出客户端传递过去的<code>TCP 建立</code>文字。</p>
+<h4 id="NodeJS简单演示RPC"><a href="#NodeJS简单演示RPC" class="headerlink" title="NodeJS简单演示RPC"></a>NodeJS简单演示RPC</h4><p>话不多说，直接上代码</p>
+<p><code>test.protp</code>数据格式定义: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">message Test &#123;</span><br><span class="line">  required string key  &#x3D; 1;</span><br><span class="line">  required string handleId &#x3D; 2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message Resp &#123;</span><br><span class="line">    required string result &#x3D; 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>client.js</code>代码如下</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> net = <span class="built_in">require</span>(<span class="string">'net'</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">const</span> protobuf = <span class="built_in">require</span>(<span class="string">'protocol-buffers'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> client = <span class="keyword">new</span> net.Socket(&#123;&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//call Id</span></span><br><span class="line"><span class="keyword">const</span> handleMap = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line">handleMap.set(<span class="string">'find'</span>, <span class="string">'node_rpc_handle_fun_id_1'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//参数</span></span><br><span class="line"><span class="keyword">const</span> params = [<span class="string">'111'</span>, <span class="string">'222'</span>, <span class="string">'333'</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//数据处理</span></span><br><span class="line"><span class="keyword">const</span> messages = protobuf(fs.readFileSync(path.join(__dirname, <span class="string">'./test.proto'</span>), <span class="string">'utf-8'</span>));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">client.connect(&#123;</span><br><span class="line">    port: <span class="number">3001</span>,</span><br><span class="line">    host: <span class="string">'127.0.0.1'</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">params.forEach(<span class="function">(<span class="params">param, i</span>) =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> data = &#123;</span><br><span class="line">            key: param,</span><br><span class="line">            handleId: handleMap.get(<span class="string">'find'</span>)</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">//数据的序列化</span></span><br><span class="line">        <span class="keyword">const</span> buf = messages.Test.encode(data);</span><br><span class="line">        <span class="comment">//网络传输</span></span><br><span class="line">        client.write(buf);</span><br><span class="line">    &#125;, i * <span class="number">100</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">client.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">buffer</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//返回结果反序列化</span></span><br><span class="line">    <span class="keyword">const</span> data = messages.Resp.decode(buffer);</span><br><span class="line">    <span class="built_in">console</span>.log(data.result);</span><br><span class="line">    <span class="comment">//NodeJS</span></span><br><span class="line">    <span class="comment">//React</span></span><br><span class="line">    <span class="comment">//Webpack</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>三个重要操作</p>
+<ul>
+<li>读取<code>Call Id</code>,参数</li>
+<li>数据序列化与反序列化</li>
+<li>与<code>server</code>建立网络连接</li>
+</ul>
+<p><code>server.js</code>代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> net = <span class="built_in">require</span>(<span class="string">'net'</span>);</span><br><span class="line"><span class="keyword">const</span> protobuf = <span class="built_in">require</span>(<span class="string">'protocol-buffers'</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//数据源</span></span><br><span class="line"><span class="keyword">const</span> data = &#123;</span><br><span class="line">    <span class="string">'111'</span>: <span class="string">'NodeJS'</span>,</span><br><span class="line">    <span class="string">'222'</span>: <span class="string">'React'</span>, </span><br><span class="line">    <span class="string">'333'</span>: <span class="string">'Webpack'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//call Id</span></span><br><span class="line"><span class="keyword">const</span> handleMap = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line"><span class="comment">//根据call Id找到对应的处理函数</span></span><br><span class="line">handleMap.set(<span class="string">'node_rpc_handle_fun_id_1'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//做一些其他事情</span></span><br><span class="line">    <span class="keyword">return</span> data[key] || <span class="string">'404'</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//数据处理</span></span><br><span class="line"><span class="keyword">const</span> messages = protobuf(fs.readFileSync(path.join(__dirname, <span class="string">'./test.proto'</span>), <span class="string">'utf-8'</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = net.createServer(<span class="function"><span class="keyword">function</span> (<span class="params">socket</span>) </span>&#123;</span><br><span class="line">    socket.on(<span class="string">'data'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">buffer</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//参数数据反序列化</span></span><br><span class="line">        <span class="keyword">const</span> data = messages.Test.decode(buffer);</span><br><span class="line">        <span class="keyword">const</span> fn = handleMap.get(data.handleId);</span><br><span class="line">        <span class="keyword">const</span> result = fn(data.key);</span><br><span class="line">        <span class="comment">//数据结果序列化</span></span><br><span class="line">        <span class="keyword">const</span> buf = messages.Resp.encode(&#123;</span><br><span class="line">            result,</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="comment">//网络传输</span></span><br><span class="line">        socket.write(buf);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">server.listen(<span class="number">3001</span>);</span><br></pre></td></tr></table></figure>
+
+<p>当<code>client</code>端向<code>server</code>端发起<code>RPC</code>调用时，我们注意到处理程序是在<code>server</code>运行的，然后将结果返回。<br>PS：<strong>这里的<code>client</code>和<code>server</code>并不一定是<code>NodeJS</code>,其他服务端语言都行。</strong></p>
+<p>警告：<strong>上面的例子只能作为<code>Demo</code>用来理解<code>RPC</code>调用，业务中不能这么调用。如何处理网络错误，如何防止攻击，如何做流量控制，如何做数据切分，如何将请求和响应做一一对应等等。</strong></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+            
+                <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           你的鼓励会是我最大的动力，求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src=""
+                <img src=""
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/ZFB-pay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChat-pay.png" alt="微信打赏">
+    </div>
+</div>
+<! -- 添加捐赠图标 -->
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='false'
+        data-ci='04f10a503134a4967d1d'
+        data-cs='9317557a89348116985c0145499a7cb7b032c9d1'
+        data-r='blog-comment'
+        data-o='wustcyl'
+        data-a='wustcyl'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是RPC"><span class="toc-number">1.</span> <span class="toc-text">什么是RPC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么要进行RPC"><span class="toc-number">2.</span> <span class="toc-text">为什么要进行RPC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何理解RPC-RPC的原理"><span class="toc-number">3.</span> <span class="toc-text">如何理解RPC(RPC的原理)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#本地过程调用"><span class="toc-number">3.1.</span> <span class="toc-text">本地过程调用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RPC调用"><span class="toc-number">3.2.</span> <span class="toc-text">RPC调用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NodeJS与RPC"><span class="toc-number">4.</span> <span class="toc-text">NodeJS与RPC</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#数据的序列化与反序列化"><span class="toc-number">4.1.</span> <span class="toc-text">数据的序列化与反序列化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NodeJS-net模块建立TCP通道"><span class="toc-number">4.2.</span> <span class="toc-text">NodeJS net模块建立TCP通道</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#NodeJS简单演示RPC"><span class="toc-number">4.3.</span> <span class="toc-text">NodeJS简单演示RPC</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

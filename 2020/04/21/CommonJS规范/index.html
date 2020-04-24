@@ -30,6 +30,20 @@
     <script async custom-element="amp-auto-ads"
         src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
     </script>
+     <script type="text/javascript">
+       var interval;
+        window.onload = function () {
+            interval = setInterval(function () {
+                if (document.getElementById('btn_donate')) {
+                    document.getElementById('btn_donate').onclick = function(){
+                    document.getElementById('donate_board').classList.add('hidden');
+                    document.getElementById('donate_guide').classList.remove('hidden');
+                  }
+                  clearInterval(interval);
+                }
+            }, 1000);
+        }
+    </script>
 <meta name="generator" content="Hexo 4.2.0"></head>
 
 <body class="loading">
@@ -59,7 +73,7 @@
         <div class="stuff">
             <span>四月 21, 2020</span>
             
-  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/CommonJS/" rel="tag">CommonJS</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/NodeJS/" rel="tag">NodeJS</a></li></ul>
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/CommonJS/" rel="tag">CommonJS</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/NodeJS%C2%B7%E5%9F%BA%E7%A1%80%E7%AF%87/" rel="tag">NodeJS·基础篇</a></li></ul>
 
 
         </div>
@@ -136,6 +150,38 @@
                         
                     
                 </ul>
+            
+            
+                <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           你的鼓励会是我最大的动力，求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src=""
+                <img src=""
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/ZFB-pay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChat-pay.png" alt="微信打赏">
+    </div>
+</div>
+<! -- 添加捐赠图标 -->
             
         </div>
         

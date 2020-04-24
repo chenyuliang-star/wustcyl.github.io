@@ -30,6 +30,20 @@
     <script async custom-element="amp-auto-ads"
         src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
     </script>
+     <script type="text/javascript">
+       var interval;
+        window.onload = function () {
+            interval = setInterval(function () {
+                if (document.getElementById('btn_donate')) {
+                    document.getElementById('btn_donate').onclick = function(){
+                    document.getElementById('donate_board').classList.add('hidden');
+                    document.getElementById('donate_guide').classList.remove('hidden');
+                  }
+                  clearInterval(interval);
+                }
+            }, 1000);
+        }
+    </script>
 <meta name="generator" content="Hexo 4.2.0"></head>
 
 <body class="loading">
@@ -46,7 +60,7 @@
                 
                     <div class="set">		
   <h2>标签</h2>
-  <a href="/tags/CommonJS/" style="font-size: 14px; color: #9e9e9e">CommonJS</a> <a href="/tags/NodeJS/" style="font-size: 36px; color: #808080">NodeJS</a>
+  <a href="/tags/CommonJS/" style="font-size: 14px; color: #9e9e9e">CommonJS</a> <a href="/tags/NodeJS%C2%B7%E5%9F%BA%E7%A1%80%E7%AF%87/" style="font-size: 36px; color: #808080">NodeJS·基础篇</a> <a href="/tags/NodeJS%C2%B7%E5%BA%94%E7%94%A8%E7%AF%87/" style="font-size: 14px; color: #9e9e9e">NodeJS·应用篇</a> <a href="/tags/RPC/" style="font-size: 14px; color: #9e9e9e">RPC</a>
 </div>
 
                 

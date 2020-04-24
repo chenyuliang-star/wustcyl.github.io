@@ -30,6 +30,20 @@
     <script async custom-element="amp-auto-ads"
         src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
     </script>
+     <script type="text/javascript">
+       var interval;
+        window.onload = function () {
+            interval = setInterval(function () {
+                if (document.getElementById('btn_donate')) {
+                    document.getElementById('btn_donate').onclick = function(){
+                    document.getElementById('donate_board').classList.add('hidden');
+                    document.getElementById('donate_guide').classList.remove('hidden');
+                  }
+                  clearInterval(interval);
+                }
+            }, 1000);
+        }
+    </script>
 <meta name="generator" content="Hexo 4.2.0"></head>
 
 <body class="loading">
@@ -44,11 +58,17 @@
             <div class="main">
                 <div class="content">
                     <div class="timeline">
-                      <h2 class="timeline-title">归档: 4篇</h2><hr>
+                      <h2 class="timeline-title">归档: 5篇</h2><hr>
                       
                       
                         
                           <h3 class="timeline-subtitle">2020</h3>
+                        
+                        <div class="timeline-item">
+                          <time>2020-04-24</time>
+                          <a target="_self" href="/2020/04/24/NodeJS%E4%B8%8ERPC/">NodeJS与RPC</a>
+                        </div>
+                      
                         
                         <div class="timeline-item">
                           <time>2020-04-22</time>
