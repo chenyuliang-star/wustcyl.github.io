@@ -278,4 +278,19 @@
         <tag>NodeJS·基础篇</tag>
       </tags>
   </entry>
+  <entry>
+    <title>使用NodeJS创建一个GraphQL服务器</title>
+    <url>/2020/05/12/%E4%BD%BF%E7%94%A8NodeJS%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAGraphQL%E6%9C%8D%E5%8A%A1%E5%99%A8/</url>
+    <content><![CDATA[<p><a href="https://juejin.im/post/5c015a5af265da612577d89a#heading-0" target="_blank" rel="noopener">译 使用 NodeJS 创建一个 GraphQL 服务器</a></p>
+<p><a href="https://graphql.cn/code/#javascript" target="_blank" rel="noopener">GraphQL与JavaScript</a></p>
+<p><a href="https://www.apollographql.com/docs/apollo-server/" target="_blank" rel="noopener">apollo-server</a></p>
+<p>Express中间件 <code>apollo-server-express</code><br>Koa中间件 <code>apollo-server-koa</code></p>
+]]></content>
+      <categories>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>NodeJS·应用篇</tag>
+      </tags>
+  </entry>
 </search>

@@ -5,12 +5,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>归档: 2020/4</title>
+    <title>使用NodeJS创建一个GraphQL服务器 - CYL&#39;s Blog</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="CYL, Blog, Hexo, Web, HTML, CSS, JS, NodeJS, React, Vue, 前端, 前端技术, 二次元,"> 
-    <meta name="description" content="CYL的个人博客，专注于前端技术，喜欢各种有趣的技术，穿梭于二次元的前端工程师,"> 
+    <meta name="description" content="CYL的个人博客，专注于前端技术，喜欢各种有趣的技术，穿梭于二次元的前端工程师,译 使用 NodeJS 创建一个 GraphQL 服务器
+GraphQL与JavaScript
+apollo-server
+Express中间件 apollo-server-expressKoa中间,"> 
     <meta name="author" content="CYL"> 
     <link rel="alternative" href="atom.xml" title="CYL&#39;s Blog" type="application/atom+xml"> 
     <link rel="icon" href="https://github.com/fluidicon.png"> 
@@ -48,63 +51,114 @@
 <body class="loading">
     <span id="config-title" style="display:none">CYL&#39;s Blog</span>
     <div id="loader"></div>
-    <div id="single" class="page">
-    <div id="top">
-        <a class="iconfont icon-left image-icon" href="javascript:history.back()"></a>
-    </div>
-    <div class="section">
-        <div class="article">
-            <div class="main">
-                <div class="content">
-                    <div class="timeline">
-                      <h2 class="timeline-title">归档: 6篇</h2><hr>
-                      
-                      
-                        
-                          <h3 class="timeline-subtitle">2020</h3>
-                        
-                        <div class="timeline-item">
-                          <time>2020-05-12</time>
-                          <a target="_self" href="/2020/05/12/%E4%BD%BF%E7%94%A8NodeJS%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAGraphQL%E6%9C%8D%E5%8A%A1%E5%99%A8/">使用NodeJS创建一个GraphQL服务器</a>
-                        </div>
-                      
-                        
-                        <div class="timeline-item">
-                          <time>2020-04-24</time>
-                          <a target="_self" href="/2020/04/24/NodeJS%E4%B8%8ERPC/">NodeJS与RPC</a>
-                        </div>
-                      
-                        
-                        <div class="timeline-item">
-                          <time>2020-04-22</time>
-                          <a target="_self" href="/2020/04/22/NodeJS%E7%9A%84%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6/">NodeJS的模块机制</a>
-                        </div>
-                      
-                        
-                        <div class="timeline-item">
-                          <time>2020-04-21</time>
-                          <a target="_self" href="/2020/04/21/CommonJS%E8%A7%84%E8%8C%83/">CommonJS规范</a>
-                        </div>
-                      
-                        
-                        <div class="timeline-item">
-                          <time>2020-04-21</time>
-                          <a target="_self" href="/2020/04/21/NodeJS%E6%98%AF%E4%BB%80%E4%B9%88/">NodeJS是什么</a>
-                        </div>
-                      
-                        
-                        <div class="timeline-item">
-                          <time>2020-04-21</time>
-                          <a target="_self" href="/2020/04/21/%E5%BC%80%E5%90%AF%E4%BD%A0%E7%9A%84NodeJS%E4%B9%8B%E6%97%85/">开启你的NodeJS之旅</a>
-                        </div>
-                      
-                    </div>
-                </div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://wustcyl.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">使用NodeJS创建一个GraphQL服务器</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
             </div>
+            <div id="qr"></div>
         </div>
     </div>
+    <div class="scrollbar"></div>
 </div>
 
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">使用NodeJS创建一个GraphQL服务器</h1>
+        <div class="stuff">
+            <span>五月 12, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/NodeJS%C2%B7%E5%BA%94%E7%94%A8%E7%AF%87/" rel="tag">NodeJS·应用篇</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p><a href="https://juejin.im/post/5c015a5af265da612577d89a#heading-0" target="_blank" rel="noopener">译 使用 NodeJS 创建一个 GraphQL 服务器</a></p>
+<p><a href="https://graphql.cn/code/#javascript" target="_blank" rel="noopener">GraphQL与JavaScript</a></p>
+<p><a href="https://www.apollographql.com/docs/apollo-server/" target="_blank" rel="noopener">apollo-server</a></p>
+<p>Express中间件 <code>apollo-server-express</code><br>Koa中间件 <code>apollo-server-koa</code></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+            
+                <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           你的鼓励会是我最大的动力，求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src=""
+                <img src=""
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/ZFB-pay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChat-pay.png" alt="微信打赏">
+    </div>
+</div>
+<! -- 添加捐赠图标 -->
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci='04f10a503134a4967d1d'
+        data-cs='9317557a89348116985c0145499a7cb7b032c9d1'
+        data-r='blog-comment'
+        data-o='wustcyl'
+        data-a='wustcyl'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+				
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
 </body>
 
 <script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
