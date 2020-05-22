@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NodeJS的性能优化一 - CYL&#39;s Blog</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="CYL, Blog, Hexo, Web, HTML, CSS, JS, NodeJS, React, Vue, 前端, 前端技术, 二次元,"> 
+    <meta name="description" content="CYL的个人博客，专注于前端技术，喜欢各种有趣的技术，穿梭于二次元的前端工程师,通过NodeJS构建前后端BFF层时，NodeJS的性能常常会变成瓶颈，所以性能分析是非常重要。利用koa构建一个简单的http服务器。
+1234567891011121314const Koa =,"> 
+    <meta name="author" content="CYL"> 
+    <link rel="alternative" href="atom.xml" title="CYL&#39;s Blog" type="application/atom+xml"> 
+    <link rel="icon" href="https://github.com/fluidicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+     <script type="text/javascript">
+       var interval;
+        window.onload = function () {
+            interval = setInterval(function () {
+                if (document.getElementById('btn_donate')) {
+                    document.getElementById('btn_donate').onclick = function(){
+                    document.getElementById('donate_board').classList.add('hidden');
+                    document.getElementById('donate_guide').classList.remove('hidden');
+                  }
+                }
+            }, 5000);
+        }
+    </script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">CYL&#39;s Blog</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://wustcyl.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">NodeJS的性能优化一</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">NodeJS的性能优化一</h1>
+        <div class="stuff">
+            <span>五月 22, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/NodeJS%C2%B7%E5%BA%94%E7%94%A8%E7%AF%87/" rel="tag">NodeJS·应用篇</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p>通过<code>NodeJS</code>构建前后端BFF层时，<code>NodeJS</code>的性能常常会变成瓶颈，所以性能分析是非常重要。<br>利用koa构建一个简单的http服务器。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>);</span><br><span class="line"><span class="keyword">const</span> mount = <span class="built_in">require</span>(<span class="string">'koa-mount'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"></span><br><span class="line">app.use(mount(<span class="string">'/'</span>, <span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">    ctx.body = fs.readFileSync(path.join(__dirname, <span class="string">'./index.html'</span>), <span class="string">'utf-8'</span>);</span><br><span class="line">&#125;))</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>, () =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`http://localhost:3000`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="http服务器性能分析"><a href="#http服务器性能分析" class="headerlink" title="http服务器性能分析"></a>http服务器性能分析</h3><p>常用的<code>http</code>服务器性能一般是进行压力测试，常用的压力测试工具一般有: <code>Apache ab</code>, <code>webbench</code>.<br>以<code>ab</code>为例<br>Ab命令参数注释：</p>
+<p>　　-n    #指定在测试会话中所执行的请求个数。默认时，仅执行一个请求。　</p>
+<p>　　-c    #指定一次产生的请求个数。默认是一次一个。</p>
+<p>　　-t    #测试所进行的最大秒数。其内部隐含值是-n 50000。它可以使对服务器的测试限制在一个固定的总时间以内。默认时，没有时间限制。</p>
+<p>　　-p    #包含了需要POST的数据的文件.</p>
+<p>　　-T    #POST数据所使用的Content-type头信息。</p>
+<p>　　-v    #设置显示信息的详细程度 - 4或更大值会显示头信息， 3或更大值可以显示响应代码(404, 200等), 2或更大值可以显示警告和其他信息。 -V 显示版本号并退出。</p>
+<p>　　-w    #以HTML表的格式输出结果。默认时，它是白色背景的两列宽度的一张表。</p>
+<p>　　-I    #执行HEAD请求，而不是GET。</p>
+<p>执行以下测试命令：<code>ab -c200 -n1600 http://localhost:3000</code>，之后会得到一份分析报告 如图所示：<br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/1.png" alt="分析报告"><br>其中最重要的是<code>requests pre second(QPS)</code>, <code>transfer rate(传输速率)</code>。</p>
+<h3 id="NodeJS性能分析工具"><a href="#NodeJS性能分析工具" class="headerlink" title="NodeJS性能分析工具"></a>NodeJS性能分析工具</h3><p>通过<code>NodeJS</code>性能分析工具可以分析出代码在那个地方消耗的性能最多, 然后进行性能优化。<br>大体上有三个方法：</p>
+<ul>
+<li>利用<code>NodeJS</code>本身自带的<code>profile</code></li>
+<li>利用<code>chrome</code>的<code>devtool</code></li>
+<li><code>clinic.js</code></li>
+</ul>
+<h4 id="利用profile进行性能测试"><a href="#利用profile进行性能测试" class="headerlink" title="利用profile进行性能测试"></a>利用profile进行性能测试</h4><p>首先将<code>Node</code>的启动命令上加入<code>--prof</code>, <code>node --prof path</code>（此时会生成一个log文件）<br>然后通过<code>ab</code>进行压力测试，等到测试完成结束后，执行<code>node --prof-process ${log文件路径} &gt; ${保存数据文件名}.txt</code></p>
+<p>其中数据最重要的就是<code>bottom up</code><br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/2.png" alt="分析报告"><br>它展示了整个调用栈，而且耗时比例也展示的非常清楚，比如第一行展示耗时占整个的20%，下一行占上一行的100%，以此类推。</p>
+<h4 id="利用devtool进行性能测试"><a href="#利用devtool进行性能测试" class="headerlink" title="利用devtool进行性能测试"></a>利用devtool进行性能测试</h4><p>首先将<code>Node</code>的启动命令上加入<code>--inspect-brk</code>, <code>node --inspect-brk path</code>。在<code>chrome</code>浏览器上面输入<code>chrome://inspect</code><br>在<code>romote target</code>中进入调试代码，然后进行压力测试，观察<code>profiler</code><br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/3.png" alt="分析报告">, 该数据和利用<code>profile</code>得到数据类似。</p>
+<h4 id="利用clinic进行性能测试"><a href="#利用clinic进行性能测试" class="headerlink" title="利用clinic进行性能测试"></a>利用clinic进行性能测试</h4><p><a href="https://www.npmjs.com/package/clinic" target="_blank" rel="noopener">clinic</a></p>
+<h4 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a>代码优化</h4><p>从上面的性能优化分析报告，我们可以得到性能优化的位置。<br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/4.png" alt="分析报告">，不难发现消耗第一个大头是这个<code>readFileSync</code>函数。<br>对于每一次访问都读取其实非常不明智的，因为很明显读取的结果可以通过一个变量存起来的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> str = fs.readFileSync(path.join(__dirname, <span class="string">'./index.html'</span>), <span class="string">'utf-8'</span>);</span><br><span class="line"></span><br><span class="line">app.use(mount(<span class="string">'/'</span>, <span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">    ctx.body = str;</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/5.png" alt="分析报告"><br>分析得出，还有一个求<code>byteLength</code>函数也消耗非常多性能，这是因为<code>NodeJS</code>的底层是使用的<code>C++</code>,<code>C++</code>处理时首先的转换成<code>buffer</code>所以这里耗费一些时间。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> buffer = fs.readFileSync(path.join(__dirname, <span class="string">'./index.html'</span>));</span><br><span class="line"></span><br><span class="line">app.use(mount(<span class="string">'/'</span>, <span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">    ctx.status = <span class="number">200</span>;</span><br><span class="line">    ctx.type = <span class="string">'text/html'</span></span><br><span class="line">    ctx.body = buffer;</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<p>重新进行压力测试。<br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/6.png" alt="分析报告"></p>
+<p>非常清楚的可以看到<code>requests pre second(QPS)</code>, <code>transfer rate(传输速率)</code>大幅度提示了。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+            
+                <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           你的鼓励会是我最大的动力，求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src=""
+                <img src=""
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/ZFB-pay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChat-pay.png" alt="微信打赏">
+    </div>
+</div>
+<! -- 添加捐赠图标 -->
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci='04f10a503134a4967d1d'
+        data-cs='9317557a89348116985c0145499a7cb7b032c9d1'
+        data-r='blog-comment'
+        data-o='wustcyl'
+        data-a='wustcyl'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#http服务器性能分析"><span class="toc-number">1.</span> <span class="toc-text">http服务器性能分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NodeJS性能分析工具"><span class="toc-number">2.</span> <span class="toc-text">NodeJS性能分析工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#利用profile进行性能测试"><span class="toc-number">2.1.</span> <span class="toc-text">利用profile进行性能测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#利用devtool进行性能测试"><span class="toc-number">2.2.</span> <span class="toc-text">利用devtool进行性能测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#利用clinic进行性能测试"><span class="toc-number">2.3.</span> <span class="toc-text">利用clinic进行性能测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#代码优化"><span class="toc-number">2.4.</span> <span class="toc-text">代码优化</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
