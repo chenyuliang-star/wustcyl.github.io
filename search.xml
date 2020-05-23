@@ -194,6 +194,85 @@
       </tags>
   </entry>
   <entry>
+    <title>NodeJS的性能优化二</title>
+    <url>/2020/05/23/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%BA%8C/</url>
+    <content><![CDATA[<h3 id="NodeJS的多进程与多线程"><a href="#NodeJS的多进程与多线程" class="headerlink" title="NodeJS的多进程与多线程"></a>NodeJS的多进程与多线程</h3><p><a href="https://juejin.im/post/5d43017be51d4561f40adcf9" target="_blank" rel="noopener">深入理解Node.js 中的进程与线程</a></p>
+<h3 id="进程守护"><a href="#进程守护" class="headerlink" title="进程守护"></a>进程守护</h3><p>经过上面的学习，你应该明白了如何利用NodeJS的内置模块进行多进程，多线程。除此之外，我们还需要做的一件事情就是进程守护。<br>一个进程守护可以从以下这几个方面进行：</p>
+<ol>
+<li>子进程捕获uncautht异常，并主动退出；</li>
+<li>父进程监听子进程退出事件，并延迟创建子进程；</li>
+<li>子进程监控内存占用过大，主动退出；</li>
+<li>父进程监听子进程心跳，3次没心跳，杀掉子进程；</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> cluster = <span class="built_in">require</span>(<span class="string">'cluster'</span>);</span><br><span class="line"><span class="keyword">const</span> os = <span class="built_in">require</span>(<span class="string">'os'</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cluster.isMaster) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; os.cpus().length / <span class="number">2</span>; i++) &#123;</span><br><span class="line">       <span class="comment">//检测4</span></span><br><span class="line">       <span class="keyword">const</span> worker =  cluster.fork();  </span><br><span class="line">       <span class="comment">//心跳检测</span></span><br><span class="line">       <span class="keyword">let</span> cnt = <span class="number">0</span>;</span><br><span class="line">       <span class="keyword">let</span> interval = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            worker.send(<span class="string">'ping'</span>);</span><br><span class="line">            cnt++;</span><br><span class="line">            <span class="comment">//当超过三次没有回应就杀死</span></span><br><span class="line">            <span class="keyword">if</span> (cnt &gt; <span class="number">3</span>) &#123;</span><br><span class="line">                process.kill(worker.process.pid)</span><br><span class="line">                clearInterval(interval);</span><br><span class="line">            &#125;</span><br><span class="line">       &#125;, <span class="number">300</span>);</span><br><span class="line">       worker.on(<span class="string">'message'</span>, (data) =&gt; &#123;</span><br><span class="line">           <span class="keyword">if</span> (data === <span class="string">'pong'</span>) cnt--;</span><br><span class="line">       &#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">//检测2</span></span><br><span class="line">     <span class="comment">//子进程退出</span></span><br><span class="line">     cluster.on(<span class="string">'exit'</span>, (err) =&gt; &#123;</span><br><span class="line">        <span class="comment">//错误日志上报</span></span><br><span class="line">      <span class="built_in">console</span>.error(err);</span><br><span class="line">      <span class="comment">//重新新起进程</span></span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> worker =  cluster.fork();  </span><br><span class="line">        <span class="comment">//心跳检测</span></span><br><span class="line">        <span class="keyword">let</span> cnt = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> interval = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">             worker.send(<span class="string">'ping'</span>);</span><br><span class="line">             cnt++;</span><br><span class="line">             <span class="comment">//当超过三次没有回应就杀死</span></span><br><span class="line">             <span class="keyword">if</span> (cnt &gt; <span class="number">3</span>) &#123;</span><br><span class="line">                 process.kill(worker.process.pid)</span><br><span class="line">                 clearInterval(interval);</span><br><span class="line">             &#125;</span><br><span class="line">        &#125;, <span class="number">300</span>);</span><br><span class="line">        worker.on(<span class="string">'message'</span>, (data) =&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> (data === <span class="string">'pong'</span>) cnt--;</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;, <span class="number">5000</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">require</span>(<span class="string">"../http"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//心跳</span></span><br><span class="line">    process.on(<span class="string">'message'</span>, (data) =&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (data === <span class="string">'ping'</span>) process.send(<span class="string">'pong'</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//检测1</span></span><br><span class="line">    process.on(<span class="string">"unhandledRejection"</span>, (err) =&gt; &#123;</span><br><span class="line">        <span class="comment">//错误日志上报</span></span><br><span class="line">        <span class="built_in">console</span>.error(err);</span><br><span class="line">        <span class="comment">//杀死进程</span></span><br><span class="line">        process.exit(<span class="number">1</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//检测3</span></span><br><span class="line">    setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">//内存大于某一值（内存发生泄露）</span></span><br><span class="line">        <span class="keyword">if</span> (process.memoryUsage().rss &gt; <span class="number">734000000</span>) &#123;</span><br><span class="line">            <span class="comment">//错误日志上报</span></span><br><span class="line">            <span class="built_in">console</span>.error(<span class="string">'内存发生泄露'</span>);</span><br><span class="line">            process.exit(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="number">5000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>NodeJS·应用篇</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用NodeJS创建一个GraphQL服务器</title>
+    <url>/2020/05/12/%E4%BD%BF%E7%94%A8NodeJS%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAGraphQL%E6%9C%8D%E5%8A%A1%E5%99%A8/</url>
+    <content><![CDATA[<p><a href="https://juejin.im/post/5c015a5af265da612577d89a#heading-0" target="_blank" rel="noopener">译 使用 NodeJS 创建一个 GraphQL 服务器</a></p>
+<p><a href="https://graphql.cn/code/#javascript" target="_blank" rel="noopener">GraphQL与JavaScript</a></p>
+<p><a href="https://www.apollographql.com/docs/apollo-server/" target="_blank" rel="noopener">apollo-server</a></p>
+<p>Express中间件 <code>apollo-server-express</code><br>Koa中间件 <code>apollo-server-koa</code></p>
+]]></content>
+      <categories>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>NodeJS·应用篇</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NodeJS的性能优化一</title>
+    <url>/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/</url>
+    <content><![CDATA[<p>通过<code>NodeJS</code>构建前后端BFF层时，<code>NodeJS</code>的性能常常会变成瓶颈，所以性能分析是非常重要。<br>利用koa构建一个简单的http服务器。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>);</span><br><span class="line"><span class="keyword">const</span> mount = <span class="built_in">require</span>(<span class="string">'koa-mount'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"></span><br><span class="line">app.use(mount(<span class="string">'/'</span>, <span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">    ctx.body = fs.readFileSync(path.join(__dirname, <span class="string">'./index.html'</span>), <span class="string">'utf-8'</span>);</span><br><span class="line">&#125;))</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>, () =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`http://localhost:3000`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="http服务器性能分析"><a href="#http服务器性能分析" class="headerlink" title="http服务器性能分析"></a>http服务器性能分析</h3><p>常用的<code>http</code>服务器性能一般是进行压力测试，常用的压力测试工具一般有: <code>Apache ab</code>, <code>webbench</code>.<br>以<code>ab</code>为例<br>Ab命令参数注释：</p>
+<p>　　-n    #指定在测试会话中所执行的请求个数。默认时，仅执行一个请求。　</p>
+<p>　　-c    #指定一次产生的请求个数。默认是一次一个。</p>
+<p>　　-t    #测试所进行的最大秒数。其内部隐含值是-n 50000。它可以使对服务器的测试限制在一个固定的总时间以内。默认时，没有时间限制。</p>
+<p>　　-p    #包含了需要POST的数据的文件.</p>
+<p>　　-T    #POST数据所使用的Content-type头信息。</p>
+<p>　　-v    #设置显示信息的详细程度 - 4或更大值会显示头信息， 3或更大值可以显示响应代码(404, 200等), 2或更大值可以显示警告和其他信息。 -V 显示版本号并退出。</p>
+<p>　　-w    #以HTML表的格式输出结果。默认时，它是白色背景的两列宽度的一张表。</p>
+<p>　　-I    #执行HEAD请求，而不是GET。</p>
+<p>执行以下测试命令：<code>ab -c200 -n1600 http://localhost:3000</code>，之后会得到一份分析报告 如图所示：<br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/1.png" alt="分析报告"><br>其中最重要的是<code>requests pre second(QPS)</code>, <code>transfer rate(传输速率)</code>。</p>
+<h3 id="NodeJS性能分析工具"><a href="#NodeJS性能分析工具" class="headerlink" title="NodeJS性能分析工具"></a>NodeJS性能分析工具</h3><p>通过<code>NodeJS</code>性能分析工具可以分析出代码在那个地方消耗的性能最多, 然后进行性能优化。<br>大体上有三个方法：</p>
+<ul>
+<li>利用<code>NodeJS</code>本身自带的<code>profile</code></li>
+<li>利用<code>chrome</code>的<code>devtool</code></li>
+<li><code>clinic.js</code></li>
+</ul>
+<h4 id="利用profile进行性能测试"><a href="#利用profile进行性能测试" class="headerlink" title="利用profile进行性能测试"></a>利用profile进行性能测试</h4><p>首先将<code>Node</code>的启动命令上加入<code>--prof</code>, <code>node --prof path</code>（此时会生成一个log文件）<br>然后通过<code>ab</code>进行压力测试，等到测试完成结束后，执行<code>node --prof-process ${log文件路径} &gt; ${保存数据文件名}.txt</code></p>
+<p>其中数据最重要的就是<code>bottom up</code><br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/2.png" alt="分析报告"><br>它展示了整个调用栈，而且耗时比例也展示的非常清楚，比如第一行展示耗时占整个的20%，下一行占上一行的100%，以此类推。</p>
+<h4 id="利用devtool进行性能测试"><a href="#利用devtool进行性能测试" class="headerlink" title="利用devtool进行性能测试"></a>利用devtool进行性能测试</h4><p>首先将<code>Node</code>的启动命令上加入<code>--inspect-brk</code>, <code>node --inspect-brk path</code>。在<code>chrome</code>浏览器上面输入<code>chrome://inspect</code><br>在<code>romote target</code>中进入调试代码，然后进行压力测试，观察<code>profiler</code><br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/3.png" alt="分析报告">, 该数据和利用<code>profile</code>得到数据类似。</p>
+<h4 id="利用clinic进行性能测试"><a href="#利用clinic进行性能测试" class="headerlink" title="利用clinic进行性能测试"></a>利用clinic进行性能测试</h4><p><a href="https://www.npmjs.com/package/clinic" target="_blank" rel="noopener">clinic</a></p>
+<h4 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a>代码优化</h4><p>从上面的性能优化分析报告，我们可以得到性能优化的位置。<br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/4.png" alt="分析报告">，不难发现消耗第一个大头是这个<code>readFileSync</code>函数。<br>对于每一次访问都读取其实非常不明智的，因为很明显读取的结果可以通过一个变量存起来的。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> str = fs.readFileSync(path.join(__dirname, <span class="string">'./index.html'</span>), <span class="string">'utf-8'</span>);</span><br><span class="line"></span><br><span class="line">app.use(mount(<span class="string">'/'</span>, <span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">    ctx.body = str;</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+<p><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/5.png" alt="分析报告"><br>分析得出，还有一个求<code>byteLength</code>函数也消耗非常多性能，这是因为<code>NodeJS</code>的底层是使用的<code>C++</code>,<code>C++</code>处理时首先的转换成<code>buffer</code>所以这里耗费一些时间。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> buffer = fs.readFileSync(path.join(__dirname, <span class="string">'./index.html'</span>));</span><br><span class="line"></span><br><span class="line">app.use(mount(<span class="string">'/'</span>, <span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">    ctx.status = <span class="number">200</span>;</span><br><span class="line">    ctx.type = <span class="string">'text/html'</span></span><br><span class="line">    ctx.body = buffer;</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<p>重新进行压力测试。<br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/6.png" alt="分析报告"></p>
+<p>非常清楚的可以看到<code>requests pre second(QPS)</code>, <code>transfer rate(传输速率)</code>大幅度提示了。</p>
+<p>这里我们可以总结出一点优化策略：***对于<code>NodeJS</code>中的代码，一定需要在启动阶段就需要将需要处理好的数据进行处理（提前计算），在<code>NodeJS</code>代码执行的时候直接使用结果就可以大幅度提升性能`</p>
+]]></content>
+      <categories>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>NodeJS·应用篇</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>NodeJS的模块机制</title>
     <url>/2020/04/22/NodeJS%E7%9A%84%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6/</url>
     <content><![CDATA[<h2 id="如何理解NodeJS的模块"><a href="#如何理解NodeJS的模块" class="headerlink" title="如何理解NodeJS的模块"></a>如何理解NodeJS的模块</h2><h3 id="NodeJS模块的本质"><a href="#NodeJS模块的本质" class="headerlink" title="NodeJS模块的本质"></a>NodeJS模块的本质</h3><p>通过前面<code>CommonJS</code>的学习，我们对NodeJS有了一个初步的认识。<a href="https://wustcyl.github.io/2020/04/21/CommonJS%E8%A7%84%E8%8C%83/">CommonJS规范</a><br>我们先讨论模块在被引用之前到底<code>NodeJS</code>执行了什么操作。</p>
@@ -252,48 +331,6 @@
       </tags>
   </entry>
   <entry>
-    <title>NodeJS的性能优化一</title>
-    <url>/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/</url>
-    <content><![CDATA[<p>通过<code>NodeJS</code>构建前后端BFF层时，<code>NodeJS</code>的性能常常会变成瓶颈，所以性能分析是非常重要。<br>利用koa构建一个简单的http服务器。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>);</span><br><span class="line"><span class="keyword">const</span> mount = <span class="built_in">require</span>(<span class="string">'koa-mount'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"></span><br><span class="line">app.use(mount(<span class="string">'/'</span>, <span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">    ctx.body = fs.readFileSync(path.join(__dirname, <span class="string">'./index.html'</span>), <span class="string">'utf-8'</span>);</span><br><span class="line">&#125;))</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>, () =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`http://localhost:3000`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="http服务器性能分析"><a href="#http服务器性能分析" class="headerlink" title="http服务器性能分析"></a>http服务器性能分析</h3><p>常用的<code>http</code>服务器性能一般是进行压力测试，常用的压力测试工具一般有: <code>Apache ab</code>, <code>webbench</code>.<br>以<code>ab</code>为例<br>Ab命令参数注释：</p>
-<p>　　-n    #指定在测试会话中所执行的请求个数。默认时，仅执行一个请求。　</p>
-<p>　　-c    #指定一次产生的请求个数。默认是一次一个。</p>
-<p>　　-t    #测试所进行的最大秒数。其内部隐含值是-n 50000。它可以使对服务器的测试限制在一个固定的总时间以内。默认时，没有时间限制。</p>
-<p>　　-p    #包含了需要POST的数据的文件.</p>
-<p>　　-T    #POST数据所使用的Content-type头信息。</p>
-<p>　　-v    #设置显示信息的详细程度 - 4或更大值会显示头信息， 3或更大值可以显示响应代码(404, 200等), 2或更大值可以显示警告和其他信息。 -V 显示版本号并退出。</p>
-<p>　　-w    #以HTML表的格式输出结果。默认时，它是白色背景的两列宽度的一张表。</p>
-<p>　　-I    #执行HEAD请求，而不是GET。</p>
-<p>执行以下测试命令：<code>ab -c200 -n1600 http://localhost:3000</code>，之后会得到一份分析报告 如图所示：<br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/1.png" alt="分析报告"><br>其中最重要的是<code>requests pre second(QPS)</code>, <code>transfer rate(传输速率)</code>。</p>
-<h3 id="NodeJS性能分析工具"><a href="#NodeJS性能分析工具" class="headerlink" title="NodeJS性能分析工具"></a>NodeJS性能分析工具</h3><p>通过<code>NodeJS</code>性能分析工具可以分析出代码在那个地方消耗的性能最多, 然后进行性能优化。<br>大体上有三个方法：</p>
-<ul>
-<li>利用<code>NodeJS</code>本身自带的<code>profile</code></li>
-<li>利用<code>chrome</code>的<code>devtool</code></li>
-<li><code>clinic.js</code></li>
-</ul>
-<h4 id="利用profile进行性能测试"><a href="#利用profile进行性能测试" class="headerlink" title="利用profile进行性能测试"></a>利用profile进行性能测试</h4><p>首先将<code>Node</code>的启动命令上加入<code>--prof</code>, <code>node --prof path</code>（此时会生成一个log文件）<br>然后通过<code>ab</code>进行压力测试，等到测试完成结束后，执行<code>node --prof-process ${log文件路径} &gt; ${保存数据文件名}.txt</code></p>
-<p>其中数据最重要的就是<code>bottom up</code><br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/2.png" alt="分析报告"><br>它展示了整个调用栈，而且耗时比例也展示的非常清楚，比如第一行展示耗时占整个的20%，下一行占上一行的100%，以此类推。</p>
-<h4 id="利用devtool进行性能测试"><a href="#利用devtool进行性能测试" class="headerlink" title="利用devtool进行性能测试"></a>利用devtool进行性能测试</h4><p>首先将<code>Node</code>的启动命令上加入<code>--inspect-brk</code>, <code>node --inspect-brk path</code>。在<code>chrome</code>浏览器上面输入<code>chrome://inspect</code><br>在<code>romote target</code>中进入调试代码，然后进行压力测试，观察<code>profiler</code><br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/3.png" alt="分析报告">, 该数据和利用<code>profile</code>得到数据类似。</p>
-<h4 id="利用clinic进行性能测试"><a href="#利用clinic进行性能测试" class="headerlink" title="利用clinic进行性能测试"></a>利用clinic进行性能测试</h4><p><a href="https://www.npmjs.com/package/clinic" target="_blank" rel="noopener">clinic</a></p>
-<h4 id="代码优化"><a href="#代码优化" class="headerlink" title="代码优化"></a>代码优化</h4><p>从上面的性能优化分析报告，我们可以得到性能优化的位置。<br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/4.png" alt="分析报告">，不难发现消耗第一个大头是这个<code>readFileSync</code>函数。<br>对于每一次访问都读取其实非常不明智的，因为很明显读取的结果可以通过一个变量存起来的。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> str = fs.readFileSync(path.join(__dirname, <span class="string">'./index.html'</span>), <span class="string">'utf-8'</span>);</span><br><span class="line"></span><br><span class="line">app.use(mount(<span class="string">'/'</span>, <span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">    ctx.body = str;</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
-<p><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/5.png" alt="分析报告"><br>分析得出，还有一个求<code>byteLength</code>函数也消耗非常多性能，这是因为<code>NodeJS</code>的底层是使用的<code>C++</code>,<code>C++</code>处理时首先的转换成<code>buffer</code>所以这里耗费一些时间。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> buffer = fs.readFileSync(path.join(__dirname, <span class="string">'./index.html'</span>));</span><br><span class="line"></span><br><span class="line">app.use(mount(<span class="string">'/'</span>, <span class="keyword">async</span> (ctx) =&gt; &#123;</span><br><span class="line">    ctx.status = <span class="number">200</span>;</span><br><span class="line">    ctx.type = <span class="string">'text/html'</span></span><br><span class="line">    ctx.body = buffer;</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
-
-<p>重新进行压力测试。<br><img src="/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/6.png" alt="分析报告"></p>
-<p>非常清楚的可以看到<code>requests pre second(QPS)</code>, <code>transfer rate(传输速率)</code>大幅度提示了。</p>
-]]></content>
-      <categories>
-        <category>NodeJS</category>
-      </categories>
-      <tags>
-        <tag>NodeJS·应用篇</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>开启你的NodeJS之旅</title>
     <url>/2020/04/21/%E5%BC%80%E5%90%AF%E4%BD%A0%E7%9A%84NodeJS%E4%B9%8B%E6%97%85/</url>
     <content><![CDATA[<h1 id="一句话概述NodeJS"><a href="#一句话概述NodeJS" class="headerlink" title="一句话概述NodeJS"></a>一句话概述NodeJS</h1><p><code>Node.js</code>是一个能够在服务器端运行<code>JavaScript</code>的开放源代码、跨平台<code>JavaScript</code>运行环境。</p>
@@ -318,21 +355,6 @@
       </categories>
       <tags>
         <tag>NodeJS·基础篇</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用NodeJS创建一个GraphQL服务器</title>
-    <url>/2020/05/12/%E4%BD%BF%E7%94%A8NodeJS%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAGraphQL%E6%9C%8D%E5%8A%A1%E5%99%A8/</url>
-    <content><![CDATA[<p><a href="https://juejin.im/post/5c015a5af265da612577d89a#heading-0" target="_blank" rel="noopener">译 使用 NodeJS 创建一个 GraphQL 服务器</a></p>
-<p><a href="https://graphql.cn/code/#javascript" target="_blank" rel="noopener">GraphQL与JavaScript</a></p>
-<p><a href="https://www.apollographql.com/docs/apollo-server/" target="_blank" rel="noopener">apollo-server</a></p>
-<p>Express中间件 <code>apollo-server-express</code><br>Koa中间件 <code>apollo-server-koa</code></p>
-]]></content>
-      <categories>
-        <category>NodeJS</category>
-      </categories>
-      <tags>
-        <tag>NodeJS·应用篇</tag>
       </tags>
   </entry>
 </search>

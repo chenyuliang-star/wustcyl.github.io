@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NodeJS的性能优化二 - CYL&#39;s Blog</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="CYL, Blog, Hexo, Web, HTML, CSS, JS, NodeJS, React, Vue, 前端, 前端技术, 二次元,"> 
+    <meta name="description" content="CYL的个人博客，专注于前端技术，喜欢各种有趣的技术，穿梭于二次元的前端工程师,NodeJS的多进程与多线程深入理解Node.js 中的进程与线程
+进程守护经过上面的学习，你应该明白了如何利用NodeJS的内置模块进行多进程，多线程。除此之外，我们还需要做的一件事情就是进程守护,"> 
+    <meta name="author" content="CYL"> 
+    <link rel="alternative" href="atom.xml" title="CYL&#39;s Blog" type="application/atom+xml"> 
+    <link rel="icon" href="https://github.com/fluidicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+     <script type="text/javascript">
+       var interval;
+        window.onload = function () {
+            interval = setInterval(function () {
+                if (document.getElementById('btn_donate')) {
+                    document.getElementById('btn_donate').onclick = function(){
+                    document.getElementById('donate_board').classList.add('hidden');
+                    document.getElementById('donate_guide').classList.remove('hidden');
+                  }
+                }
+            }, 5000);
+        }
+    </script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">CYL&#39;s Blog</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://wustcyl.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">NodeJS的性能优化二</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">NodeJS的性能优化二</h1>
+        <div class="stuff">
+            <span>五月 23, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/NodeJS%C2%B7%E5%BA%94%E7%94%A8%E7%AF%87/" rel="tag">NodeJS·应用篇</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="NodeJS的多进程与多线程"><a href="#NodeJS的多进程与多线程" class="headerlink" title="NodeJS的多进程与多线程"></a>NodeJS的多进程与多线程</h3><p><a href="https://juejin.im/post/5d43017be51d4561f40adcf9" target="_blank" rel="noopener">深入理解Node.js 中的进程与线程</a></p>
+<h3 id="进程守护"><a href="#进程守护" class="headerlink" title="进程守护"></a>进程守护</h3><p>经过上面的学习，你应该明白了如何利用NodeJS的内置模块进行多进程，多线程。除此之外，我们还需要做的一件事情就是进程守护。<br>一个进程守护可以从以下这几个方面进行：</p>
+<ol>
+<li>子进程捕获uncautht异常，并主动退出；</li>
+<li>父进程监听子进程退出事件，并延迟创建子进程；</li>
+<li>子进程监控内存占用过大，主动退出；</li>
+<li>父进程监听子进程心跳，3次没心跳，杀掉子进程；</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> cluster = <span class="built_in">require</span>(<span class="string">'cluster'</span>);</span><br><span class="line"><span class="keyword">const</span> os = <span class="built_in">require</span>(<span class="string">'os'</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cluster.isMaster) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; os.cpus().length / <span class="number">2</span>; i++) &#123;</span><br><span class="line">       <span class="comment">//检测4</span></span><br><span class="line">       <span class="keyword">const</span> worker =  cluster.fork();  </span><br><span class="line">       <span class="comment">//心跳检测</span></span><br><span class="line">       <span class="keyword">let</span> cnt = <span class="number">0</span>;</span><br><span class="line">       <span class="keyword">let</span> interval = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            worker.send(<span class="string">'ping'</span>);</span><br><span class="line">            cnt++;</span><br><span class="line">            <span class="comment">//当超过三次没有回应就杀死</span></span><br><span class="line">            <span class="keyword">if</span> (cnt &gt; <span class="number">3</span>) &#123;</span><br><span class="line">                process.kill(worker.process.pid)</span><br><span class="line">                clearInterval(interval);</span><br><span class="line">            &#125;</span><br><span class="line">       &#125;, <span class="number">300</span>);</span><br><span class="line">       worker.on(<span class="string">'message'</span>, (data) =&gt; &#123;</span><br><span class="line">           <span class="keyword">if</span> (data === <span class="string">'pong'</span>) cnt--;</span><br><span class="line">       &#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">//检测2</span></span><br><span class="line">     <span class="comment">//子进程退出</span></span><br><span class="line">     cluster.on(<span class="string">'exit'</span>, (err) =&gt; &#123;</span><br><span class="line">        <span class="comment">//错误日志上报</span></span><br><span class="line">      <span class="built_in">console</span>.error(err);</span><br><span class="line">      <span class="comment">//重新新起进程</span></span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> worker =  cluster.fork();  </span><br><span class="line">        <span class="comment">//心跳检测</span></span><br><span class="line">        <span class="keyword">let</span> cnt = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> interval = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">             worker.send(<span class="string">'ping'</span>);</span><br><span class="line">             cnt++;</span><br><span class="line">             <span class="comment">//当超过三次没有回应就杀死</span></span><br><span class="line">             <span class="keyword">if</span> (cnt &gt; <span class="number">3</span>) &#123;</span><br><span class="line">                 process.kill(worker.process.pid)</span><br><span class="line">                 clearInterval(interval);</span><br><span class="line">             &#125;</span><br><span class="line">        &#125;, <span class="number">300</span>);</span><br><span class="line">        worker.on(<span class="string">'message'</span>, (data) =&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> (data === <span class="string">'pong'</span>) cnt--;</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;, <span class="number">5000</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">require</span>(<span class="string">"../http"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//心跳</span></span><br><span class="line">    process.on(<span class="string">'message'</span>, (data) =&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (data === <span class="string">'ping'</span>) process.send(<span class="string">'pong'</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//检测1</span></span><br><span class="line">    process.on(<span class="string">"unhandledRejection"</span>, (err) =&gt; &#123;</span><br><span class="line">        <span class="comment">//错误日志上报</span></span><br><span class="line">        <span class="built_in">console</span>.error(err);</span><br><span class="line">        <span class="comment">//杀死进程</span></span><br><span class="line">        process.exit(<span class="number">1</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//检测3</span></span><br><span class="line">    setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">//内存大于某一值（内存发生泄露）</span></span><br><span class="line">        <span class="keyword">if</span> (process.memoryUsage().rss &gt; <span class="number">734000000</span>) &#123;</span><br><span class="line">            <span class="comment">//错误日志上报</span></span><br><span class="line">            <span class="built_in">console</span>.error(<span class="string">'内存发生泄露'</span>);</span><br><span class="line">            process.exit(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, <span class="number">5000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+            
+                <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           你的鼓励会是我最大的动力，求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src=""
+                <img src=""
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/ZFB-pay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChat-pay.png" alt="微信打赏">
+    </div>
+</div>
+<! -- 添加捐赠图标 -->
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci='04f10a503134a4967d1d'
+        data-cs='9317557a89348116985c0145499a7cb7b032c9d1'
+        data-r='blog-comment'
+        data-o='wustcyl'
+        data-a='wustcyl'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#NodeJS的多进程与多线程"><span class="toc-number">1.</span> <span class="toc-text">NodeJS的多进程与多线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进程守护"><span class="toc-number">2.</span> <span class="toc-text">进程守护</span></a></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
