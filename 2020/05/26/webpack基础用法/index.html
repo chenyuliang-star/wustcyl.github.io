@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>webpack基础用法 - CYL&#39;s Blog</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="CYL, Blog, Hexo, Web, HTML, CSS, JS, NodeJS, React, Vue, 前端, 前端技术, 二次元,"> 
+    <meta name="description" content="CYL的个人博客，专注于前端技术，喜欢各种有趣的技术，穿梭于二次元的前端工程师,基本概念entry: 依赖的入口文件（多入口，单入口），从入口文件出发，遍历整棵依赖树，将所有的依赖遍历完成后形成一个打包后的文件。output: 指定打包的输出文件（名称，在哪里）（filenam,"> 
+    <meta name="author" content="CYL"> 
+    <link rel="alternative" href="atom.xml" title="CYL&#39;s Blog" type="application/atom+xml"> 
+    <link rel="icon" href="https://github.com/fluidicon.png"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+     <script type="text/javascript">
+       var interval;
+        window.onload = function () {
+            interval = setInterval(function () {
+                if (document.getElementById('btn_donate')) {
+                    document.getElementById('btn_donate').onclick = function(){
+                    document.getElementById('donate_board').classList.add('hidden');
+                    document.getElementById('donate_guide').classList.remove('hidden');
+                  }
+                }
+            }, 5000);
+        }
+    </script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">CYL&#39;s Blog</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://wustcyl.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">webpack基础用法</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">webpack基础用法</h1>
+        <div class="stuff">
+            <span>五月 26, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/webpack%C2%B7%E5%9F%BA%E7%A1%80%E7%AF%87/" rel="tag">webpack·基础篇</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>entry: 依赖的入口文件（多入口，单入口），从入口文件出发，遍历整棵依赖树，将所有的依赖遍历完成后形成一个打包后的文件。<br>output: 指定打包的输出文件（名称，在哪里）（filename, path), 通过占位符确定多入口配置，打包文件的名称的唯一。<br>loader:<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/1.png" alt="loader"><br>常用loader:<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/2.png" alt="常用loader"><br>plugin: 用于bundle文件的优化，资源管理和环境注入，作用与整个构建过程<br>常用plugins：<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/3.png" alt="常用plugins"><br>Mode: 指定打包的环境<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/5.png" alt="mode"></p>
+<h3 id="webpack基础打包"><a href="#webpack基础打包" class="headerlink" title="webpack基础打包"></a>webpack基础打包</h3><h4 id="如何解析ES6-React"><a href="#如何解析ES6-React" class="headerlink" title="如何解析ES6, React"></a>如何解析ES6, React</h4><p>使用babel-loader, 在.bablerc中使用@babel/preset-env @babel/preset-react </p>
+<h4 id="如何解析css-less-scss"><a href="#如何解析css-less-scss" class="headerlink" title="如何解析css,less,scss"></a>如何解析css,less,scss</h4><p>使用style-loader, css-loader,然后按照解析less还是scss添加less-loader或者scss-loader</p>
+<h4 id="如何解析图片，字体"><a href="#如何解析图片，字体" class="headerlink" title="如何解析图片，字体"></a>如何解析图片，字体</h4><p>使用file-loader 或者url-loader(在文件较小的情况下，会转成base64)</p>
+<h4 id="webpack文件监听"><a href="#webpack文件监听" class="headerlink" title="webpack文件监听"></a>webpack文件监听</h4><ul>
+<li>–watch命令  缺点 需要手动刷新浏览器。监听原理：轮询去判断每个文件的最后修改时间是否发生变化。当然存在文件发生变化时，也不会立刻触发更新，而是先缓存起来，等到一定时间在统一更新。<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/4.png" alt="watch命令"></li>
+<li>webpack热更新 (webpack-dev-server+HotModuleReplacementPlugin) 打包文件放在内存里面.<br>PS：配置了 hot: true 会自动引入webpack.HotModuleReplacementPlugin<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/6.png" alt="webpack热更新原理"><br> 启动阶段：你的代码由webpack Compiler 编译打包后，给bundle server 启动一个本地服务器，共浏览器访问。1-2-A-B<br> 修改阶段：你的代码修改后，经过webpack Compiler打包后，传给HMR server,然后通过HMR server传给HMR Runtime 最后由HMR runtime注入（websocket)到浏览器，更新文件变化。1-2-3-4<h4 id="文件指纹"><a href="#文件指纹" class="headerlink" title="文件指纹"></a>文件指纹</h4><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/7.png" alt="文件指纹"><br>S一般采用 ChunkHash（直接修改output的filename)  CSS一般采用ContentHash(MiniCssExtractPlugin),其他资源一般采用file-loader的占位符（hash)。<h4 id="文件压缩"><a href="#文件压缩" class="headerlink" title="文件压缩"></a>文件压缩</h4>JS压缩 （uglifyjs-webpack-plugin webpack4默认有）<br>css压缩（optimize-css-assets-webpack-plugin) 配合使用cssnano<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/8.png" alt="css压缩"><br>html压缩 （html-webpack-plugin)<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/9.png" alt="html压缩"></li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+            
+                <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           你的鼓励会是我最大的动力，求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src=""
+                <img src=""
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/ZFB-pay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChat-pay.png" alt="微信打赏">
+    </div>
+</div>
+<! -- 添加捐赠图标 -->
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='true'
+        data-ae='true'
+        data-ci='04f10a503134a4967d1d'
+        data-cs='9317557a89348116985c0145499a7cb7b032c9d1'
+        data-r='blog-comment'
+        data-o='wustcyl'
+        data-a='wustcyl'
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本概念"><span class="toc-number">1.</span> <span class="toc-text">基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#webpack基础打包"><span class="toc-number">2.</span> <span class="toc-text">webpack基础打包</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#如何解析ES6-React"><span class="toc-number">2.1.</span> <span class="toc-text">如何解析ES6, React</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#如何解析css-less-scss"><span class="toc-number">2.2.</span> <span class="toc-text">如何解析css,less,scss</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#如何解析图片，字体"><span class="toc-number">2.3.</span> <span class="toc-text">如何解析图片，字体</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#webpack文件监听"><span class="toc-number">2.4.</span> <span class="toc-text">webpack文件监听</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#文件指纹"><span class="toc-number">2.5.</span> <span class="toc-text">文件指纹</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#文件压缩"><span class="toc-number">2.6.</span> <span class="toc-text">文件压缩</span></a></li></ol></li></ol>	
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

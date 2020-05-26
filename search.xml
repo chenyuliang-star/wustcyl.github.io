@@ -357,4 +357,23 @@
         <tag>NodeJS·基础篇</tag>
       </tags>
   </entry>
+  <entry>
+    <title>webpack基础用法</title>
+    <url>/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>entry: 依赖的入口文件（多入口，单入口），从入口文件出发，遍历整棵依赖树，将所有的依赖遍历完成后形成一个打包后的文件。<br>output: 指定打包的输出文件（名称，在哪里）（filename, path), 通过占位符确定多入口配置，打包文件的名称的唯一。<br>loader:<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/1.png" alt="loader"><br>常用loader:<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/2.png" alt="常用loader"><br>plugin: 用于bundle文件的优化，资源管理和环境注入，作用与整个构建过程<br>常用plugins：<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/3.png" alt="常用plugins"><br>Mode: 指定打包的环境<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/5.png" alt="mode"></p>
+<h3 id="webpack基础打包"><a href="#webpack基础打包" class="headerlink" title="webpack基础打包"></a>webpack基础打包</h3><h4 id="如何解析ES6-React"><a href="#如何解析ES6-React" class="headerlink" title="如何解析ES6, React"></a>如何解析ES6, React</h4><p>使用babel-loader, 在.bablerc中使用@babel/preset-env @babel/preset-react </p>
+<h4 id="如何解析css-less-scss"><a href="#如何解析css-less-scss" class="headerlink" title="如何解析css,less,scss"></a>如何解析css,less,scss</h4><p>使用style-loader, css-loader,然后按照解析less还是scss添加less-loader或者scss-loader</p>
+<h4 id="如何解析图片，字体"><a href="#如何解析图片，字体" class="headerlink" title="如何解析图片，字体"></a>如何解析图片，字体</h4><p>使用file-loader 或者url-loader(在文件较小的情况下，会转成base64)</p>
+<h4 id="webpack文件监听"><a href="#webpack文件监听" class="headerlink" title="webpack文件监听"></a>webpack文件监听</h4><ul>
+<li>–watch命令  缺点 需要手动刷新浏览器。监听原理：轮询去判断每个文件的最后修改时间是否发生变化。当然存在文件发生变化时，也不会立刻触发更新，而是先缓存起来，等到一定时间在统一更新。<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/4.png" alt="watch命令"></li>
+<li>webpack热更新 (webpack-dev-server+HotModuleReplacementPlugin) 打包文件放在内存里面.<br>PS：配置了 hot: true 会自动引入webpack.HotModuleReplacementPlugin<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/6.png" alt="webpack热更新原理"><br> 启动阶段：你的代码由webpack Compiler 编译打包后，给bundle server 启动一个本地服务器，共浏览器访问。1-2-A-B<br> 修改阶段：你的代码修改后，经过webpack Compiler打包后，传给HMR server,然后通过HMR server传给HMR Runtime 最后由HMR runtime注入（websocket)到浏览器，更新文件变化。1-2-3-4<h4 id="文件指纹"><a href="#文件指纹" class="headerlink" title="文件指纹"></a>文件指纹</h4><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/7.png" alt="文件指纹"><br>S一般采用 ChunkHash（直接修改output的filename)  CSS一般采用ContentHash(MiniCssExtractPlugin),其他资源一般采用file-loader的占位符（hash)。<h4 id="文件压缩"><a href="#文件压缩" class="headerlink" title="文件压缩"></a>文件压缩</h4>JS压缩 （uglifyjs-webpack-plugin webpack4默认有）<br>css压缩（optimize-css-assets-webpack-plugin) 配合使用cssnano<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/8.png" alt="css压缩"><br>html压缩 （html-webpack-plugin)<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/9.png" alt="html压缩"></li>
+</ul>
+]]></content>
+      <categories>
+        <category>webpack</category>
+      </categories>
+      <tags>
+        <tag>webpack·基础篇</tag>
+      </tags>
+  </entry>
 </search>
