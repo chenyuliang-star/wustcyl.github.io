@@ -215,21 +215,6 @@
       </tags>
   </entry>
   <entry>
-    <title>使用NodeJS创建一个GraphQL服务器</title>
-    <url>/2020/05/12/%E4%BD%BF%E7%94%A8NodeJS%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAGraphQL%E6%9C%8D%E5%8A%A1%E5%99%A8/</url>
-    <content><![CDATA[<p><a href="https://juejin.im/post/5c015a5af265da612577d89a#heading-0" target="_blank" rel="noopener">译 使用 NodeJS 创建一个 GraphQL 服务器</a></p>
-<p><a href="https://graphql.cn/code/#javascript" target="_blank" rel="noopener">GraphQL与JavaScript</a></p>
-<p><a href="https://www.apollographql.com/docs/apollo-server/" target="_blank" rel="noopener">apollo-server</a></p>
-<p>Express中间件 <code>apollo-server-express</code><br>Koa中间件 <code>apollo-server-koa</code></p>
-]]></content>
-      <categories>
-        <category>NodeJS</category>
-      </categories>
-      <tags>
-        <tag>NodeJS·应用篇</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>NodeJS的性能优化一</title>
     <url>/2020/05/22/NodeJS%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E4%B8%80/</url>
     <content><![CDATA[<p>通过<code>NodeJS</code>构建前后端BFF层时，<code>NodeJS</code>的性能常常会变成瓶颈，所以性能分析是非常重要。<br>利用koa构建一个简单的http服务器。</p>
@@ -331,6 +316,75 @@
       </tags>
   </entry>
   <entry>
+    <title>webpack基础用法</title>
+    <url>/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>entry: 依赖的入口文件（多入口，单入口），从入口文件出发，遍历整棵依赖树，将所有的依赖遍历完成后形成一个打包后的文件。<br>output: 指定打包的输出文件（名称，在哪里）（filename, path), 通过占位符确定多入口配置，打包文件的名称的唯一。<br>loader:<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/1.png" alt="loader"><br>常用loader:<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/2.png" alt="常用loader"><br>plugin: 用于bundle文件的优化，资源管理和环境注入，作用与整个构建过程<br>常用plugins：<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/3.png" alt="常用plugins"><br>Mode: 指定打包的环境<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/5.png" alt="mode"></p>
+<h3 id="webpack基础打包"><a href="#webpack基础打包" class="headerlink" title="webpack基础打包"></a>webpack基础打包</h3><h4 id="如何解析ES6-React"><a href="#如何解析ES6-React" class="headerlink" title="如何解析ES6, React"></a>如何解析ES6, React</h4><p>使用babel-loader, 在.bablerc中使用@babel/preset-env @babel/preset-react </p>
+<h4 id="如何解析css-less-scss"><a href="#如何解析css-less-scss" class="headerlink" title="如何解析css,less,scss"></a>如何解析css,less,scss</h4><p>使用style-loader, css-loader,然后按照解析less还是scss添加less-loader或者scss-loader</p>
+<h4 id="如何解析图片，字体"><a href="#如何解析图片，字体" class="headerlink" title="如何解析图片，字体"></a>如何解析图片，字体</h4><p>使用file-loader 或者url-loader(在文件较小的情况下，会转成base64)</p>
+<h4 id="webpack文件监听"><a href="#webpack文件监听" class="headerlink" title="webpack文件监听"></a>webpack文件监听</h4><ul>
+<li>–watch命令  缺点 需要手动刷新浏览器。监听原理：轮询去判断每个文件的最后修改时间是否发生变化。当然存在文件发生变化时，也不会立刻触发更新，而是先缓存起来，等到一定时间在统一更新。<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/4.png" alt="watch命令"></li>
+<li>webpack热更新 (webpack-dev-server+HotModuleReplacementPlugin) 打包文件放在内存里面.<br>PS：配置了 hot: true 会自动引入webpack.HotModuleReplacementPlugin<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/6.png" alt="webpack热更新原理"><br> 启动阶段：你的代码由webpack Compiler 编译打包后，给bundle server 启动一个本地服务器，共浏览器访问。1-2-A-B<br> 修改阶段：你的代码修改后，经过webpack Compiler打包后，传给HMR server,然后通过HMR server传给HMR Runtime 最后由HMR runtime注入（websocket)到浏览器，更新文件变化。1-2-3-4</li>
+</ul>
+<h4 id="文件指纹"><a href="#文件指纹" class="headerlink" title="文件指纹"></a>文件指纹</h4><p><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/7.png" alt="文件指纹"><br>JS一般采用 ChunkHash（直接修改output的filename)  CSS一般采用ContentHash(MiniCssExtractPlugin),其他资源一般采用file-loader的占位符（hash)。</p>
+<h4 id="文件压缩"><a href="#文件压缩" class="headerlink" title="文件压缩"></a>文件压缩</h4><p>JS压缩 （uglifyjs-webpack-plugin webpack4默认有）<br>css压缩（optimize-css-assets-webpack-plugin) 配合使用cssnano<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/8.png" alt="css压缩"><br>html压缩 （html-webpack-plugin)<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/9.png" alt="html压缩"></p>
+<h4 id="自动补全css前缀"><a href="#自动补全css前缀" class="headerlink" title="自动补全css前缀"></a>自动补全css前缀</h4><p>使用postcss + autoprefixer插件  补全css前缀</p>
+<h4 id="移动端布局px转rem"><a href="#移动端布局px转rem" class="headerlink" title="移动端布局px转rem"></a>移动端布局px转rem</h4><ul>
+<li>px2rem-loader + lib-flexible (一个是px转rem, 一个是计算html font-size)</li>
+<li>postcss-pxtorem+hotcss</li>
+</ul>
+<h4 id="移动端布局px转vw"><a href="#移动端布局px转vw" class="headerlink" title="移动端布局px转vw"></a>移动端布局px转vw</h4><p>postcss+postcss-px-to-viewport</p>
+<h4 id="内敛静态资源"><a href="#内敛静态资源" class="headerlink" title="内敛静态资源"></a>内敛静态资源</h4><p>JS和HTML的内敛 使用raw-loader<br>CSS的内敛 使用style-loader or html-inline-css-webpack-plugin</p>
+<h4 id="多页面打包"><a href="#多页面打包" class="headerlink" title="多页面打包"></a>多页面打包</h4><p>结合html-webpack-plugins + glob （动态读取页面，生成html模版）</p>
+<h4 id="Source-map-开发环境开启，线上环境关闭）"><a href="#Source-map-开发环境开启，线上环境关闭）" class="headerlink" title="Source map(开发环境开启，线上环境关闭）"></a>Source map(开发环境开启，线上环境关闭）</h4><p><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/10.png" alt="source map 关键字"><br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/11.png" alt="source map 类型"></p>
+<h4 id="多页面打包公共资源打包"><a href="#多页面打包公共资源打包" class="headerlink" title="多页面打包公共资源打包"></a>多页面打包公共资源打包</h4><ul>
+<li><p>HtmlWebpackExternalsPlugin<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/12.png" alt="HtmlWebpackExternalsPlugin 用法"></p>
+</li>
+<li><p>SplitChunkPlugin <a href="https://juejin.im/post/5b99b9cd6fb9a05cff32007a#heading-6" target="_blank" rel="noopener">SplitChunkPlugin用法</a></p>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">      splitChunks: &#123;</span><br><span class="line">        <span class="comment">// async：异步引入的库进行分离（默认）， initial： 同步引入的库进行分离， all：所有引入的           // 库进行分离（推荐）</span></span><br><span class="line">        chunks: <span class="string">'async'</span>,</span><br><span class="line">        minSize: <span class="number">30000</span>, <span class="comment">// 抽离的公共包最小的大小，单位字节</span></span><br><span class="line">        maxSize: <span class="number">0</span>, <span class="comment">// 最大的大小</span></span><br><span class="line">        minChunks: <span class="number">1</span>, <span class="comment">// 资源使用的次数(在多个页面使用到)， 大于1， 最小使用次数</span></span><br><span class="line">        maxAsyncRequests: <span class="number">5</span>, <span class="comment">// 并发请求的数量</span></span><br><span class="line">        maxInitialRequests: <span class="number">3</span>, <span class="comment">// 入口文件做代码分割最多能分成3个js文件</span></span><br><span class="line">        automaticNameDelimiter: <span class="string">'~'</span>, <span class="comment">// 文件生成时的连接符</span></span><br><span class="line">        automaticNameMaxLength: <span class="number">30</span>, <span class="comment">// 自动自动命名最大长度</span></span><br><span class="line">        name: <span class="literal">true</span>, <span class="comment">//让cacheGroups里设置的名字有效</span></span><br><span class="line">        cacheGroups: &#123; <span class="comment">//当打包同步代码时,上面的参数生效</span></span><br><span class="line">          vendors: &#123;</span><br><span class="line">            test: <span class="regexp">/[\\/]node_modules[\\/]/</span>, <span class="comment">//检测引入的库是否在node_modlues目录下的</span></span><br><span class="line">            priority: <span class="number">-10</span>, <span class="comment">//值越大,优先级越高.模块先打包到优先级高的组里</span></span><br><span class="line">            filename: <span class="string">'vendors.js'</span><span class="comment">//把所有的库都打包到一个叫vendors.js的文件里</span></span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="keyword">default</span>: &#123;</span><br><span class="line">            minChunks: <span class="number">2</span>, <span class="comment">// 上面有</span></span><br><span class="line">            priority: <span class="number">-20</span>, <span class="comment">// 上面有</span></span><br><span class="line">            reuseExistingChunk: <span class="literal">true</span> <span class="comment">//如果一个模块已经被打包过了,那么再打包时就忽略这个上模块</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Three-shaking"><a href="#Three-shaking" class="headerlink" title="Three shaking"></a>Three shaking</h4><p><a href="https://juejin.im/post/5a4dc842518825698e7279a9" target="_blank" rel="noopener">Three shaking介绍</a><br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/13.png" alt="Three Shaking 介绍"></p>
+<p>哪些代码会被Three shaking干掉<br>代码不可达；执行结果不会用到；变量只写不读（DCE）</p>
+<p>为什么ES6 module才能用Three Shaking?<br>ES6 module 特点：</p>
+<ul>
+<li>只能作为模块顶层的语句出现</li>
+<li>import 的模块名只能是字符串常量</li>
+<li>import binding 是 immutable的<br>ES6模块依赖关系是确定的，和运行时的状态无关，可以进行可靠的静态分析，这就是tree-shaking的基础。<br>所谓静态分析就是不执行代码，从字面量上对代码进行分析，ES6之前的模块化，比如我们可以动态require一个模块，只有执行后才知道引用的什么模块，这个就不能通过静态分析去做优化。<br>这是 ES6 modules 在设计时的一个重要考量，也是为什么没有直接采用 CommonJS，正是基于这个基础上，才使得 tree-shaking 成为可能，这也是为什么 rollup 和 webpack 2 都要用 ES6 module syntax 才能 tree-shaking。</li>
+</ul>
+<h4 id="懒加载JS"><a href="#懒加载JS" class="headerlink" title="懒加载JS"></a>懒加载JS</h4><ul>
+<li>commonJS: require.ensure</li>
+<li>ES6 module: 动态import(import()) 目前不兼容需要 babel（@babel/plugin-syntax-dynamic-import)</li>
+</ul>
+<p>使用import()语法加载的内容会额外被打成一个包，然后被通过jsonp请求</p>
+<h4 id="使用ESlint"><a href="#使用ESlint" class="headerlink" title="使用ESlint"></a>使用ESlint</h4><p>在处理js的loader中添加eslint-loader, 然后在.eslintrc.*中编写规则</p>
+<h4 id="SSR打包"><a href="#SSR打包" class="headerlink" title="SSR打包"></a>SSR打包</h4><p><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/14.png" alt="SSR打包规则"></p>
+<h4 id="优化webpack打包输出命令"><a href="#优化webpack打包输出命令" class="headerlink" title="优化webpack打包输出命令"></a>优化webpack打包输出命令</h4><p>status设置<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/15.png" alt="status设置"><br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/16.png" alt="plugins的使用"></p>
+]]></content>
+      <categories>
+        <category>webpack</category>
+      </categories>
+      <tags>
+        <tag>webpack·基础篇</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用NodeJS创建一个GraphQL服务器</title>
+    <url>/2020/05/12/%E4%BD%BF%E7%94%A8NodeJS%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAGraphQL%E6%9C%8D%E5%8A%A1%E5%99%A8/</url>
+    <content><![CDATA[<p><a href="https://juejin.im/post/5c015a5af265da612577d89a#heading-0" target="_blank" rel="noopener">译 使用 NodeJS 创建一个 GraphQL 服务器</a></p>
+<p><a href="https://graphql.cn/code/#javascript" target="_blank" rel="noopener">GraphQL与JavaScript</a></p>
+<p><a href="https://www.apollographql.com/docs/apollo-server/" target="_blank" rel="noopener">apollo-server</a></p>
+<p>Express中间件 <code>apollo-server-express</code><br>Koa中间件 <code>apollo-server-koa</code></p>
+]]></content>
+      <categories>
+        <category>NodeJS</category>
+      </categories>
+      <tags>
+        <tag>NodeJS·应用篇</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>开启你的NodeJS之旅</title>
     <url>/2020/04/21/%E5%BC%80%E5%90%AF%E4%BD%A0%E7%9A%84NodeJS%E4%B9%8B%E6%97%85/</url>
     <content><![CDATA[<h1 id="一句话概述NodeJS"><a href="#一句话概述NodeJS" class="headerlink" title="一句话概述NodeJS"></a>一句话概述NodeJS</h1><p><code>Node.js</code>是一个能够在服务器端运行<code>JavaScript</code>的开放源代码、跨平台<code>JavaScript</code>运行环境。</p>
@@ -355,25 +409,6 @@
       </categories>
       <tags>
         <tag>NodeJS·基础篇</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>webpack基础用法</title>
-    <url>/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>entry: 依赖的入口文件（多入口，单入口），从入口文件出发，遍历整棵依赖树，将所有的依赖遍历完成后形成一个打包后的文件。<br>output: 指定打包的输出文件（名称，在哪里）（filename, path), 通过占位符确定多入口配置，打包文件的名称的唯一。<br>loader:<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/1.png" alt="loader"><br>常用loader:<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/2.png" alt="常用loader"><br>plugin: 用于bundle文件的优化，资源管理和环境注入，作用与整个构建过程<br>常用plugins：<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/3.png" alt="常用plugins"><br>Mode: 指定打包的环境<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/5.png" alt="mode"></p>
-<h3 id="webpack基础打包"><a href="#webpack基础打包" class="headerlink" title="webpack基础打包"></a>webpack基础打包</h3><h4 id="如何解析ES6-React"><a href="#如何解析ES6-React" class="headerlink" title="如何解析ES6, React"></a>如何解析ES6, React</h4><p>使用babel-loader, 在.bablerc中使用@babel/preset-env @babel/preset-react </p>
-<h4 id="如何解析css-less-scss"><a href="#如何解析css-less-scss" class="headerlink" title="如何解析css,less,scss"></a>如何解析css,less,scss</h4><p>使用style-loader, css-loader,然后按照解析less还是scss添加less-loader或者scss-loader</p>
-<h4 id="如何解析图片，字体"><a href="#如何解析图片，字体" class="headerlink" title="如何解析图片，字体"></a>如何解析图片，字体</h4><p>使用file-loader 或者url-loader(在文件较小的情况下，会转成base64)</p>
-<h4 id="webpack文件监听"><a href="#webpack文件监听" class="headerlink" title="webpack文件监听"></a>webpack文件监听</h4><ul>
-<li>–watch命令  缺点 需要手动刷新浏览器。监听原理：轮询去判断每个文件的最后修改时间是否发生变化。当然存在文件发生变化时，也不会立刻触发更新，而是先缓存起来，等到一定时间在统一更新。<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/4.png" alt="watch命令"></li>
-<li>webpack热更新 (webpack-dev-server+HotModuleReplacementPlugin) 打包文件放在内存里面.<br>PS：配置了 hot: true 会自动引入webpack.HotModuleReplacementPlugin<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/6.png" alt="webpack热更新原理"><br> 启动阶段：你的代码由webpack Compiler 编译打包后，给bundle server 启动一个本地服务器，共浏览器访问。1-2-A-B<br> 修改阶段：你的代码修改后，经过webpack Compiler打包后，传给HMR server,然后通过HMR server传给HMR Runtime 最后由HMR runtime注入（websocket)到浏览器，更新文件变化。1-2-3-4<h4 id="文件指纹"><a href="#文件指纹" class="headerlink" title="文件指纹"></a>文件指纹</h4><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/7.png" alt="文件指纹"><br>S一般采用 ChunkHash（直接修改output的filename)  CSS一般采用ContentHash(MiniCssExtractPlugin),其他资源一般采用file-loader的占位符（hash)。<h4 id="文件压缩"><a href="#文件压缩" class="headerlink" title="文件压缩"></a>文件压缩</h4>JS压缩 （uglifyjs-webpack-plugin webpack4默认有）<br>css压缩（optimize-css-assets-webpack-plugin) 配合使用cssnano<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/8.png" alt="css压缩"><br>html压缩 （html-webpack-plugin)<br><img src="/2020/05/26/webpack%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/9.png" alt="html压缩"></li>
-</ul>
-]]></content>
-      <categories>
-        <category>webpack</category>
-      </categories>
-      <tags>
-        <tag>webpack·基础篇</tag>
       </tags>
   </entry>
 </search>
